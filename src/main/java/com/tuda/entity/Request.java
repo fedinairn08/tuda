@@ -1,0 +1,33 @@
+package com.tuda.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import java.time.LocalDate;
+
+import static com.tuda.entity.AbstractEntity.DEFAULT_GENERATOR;
+
+@Accessors(chain = true)
+@Entity
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "requests")
+@SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "requests_seq")
+public class Request extends AbstractEntity {
+    @ManyToOne
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
+    private boolean status;
+
+    private LocalDate date;
+}
