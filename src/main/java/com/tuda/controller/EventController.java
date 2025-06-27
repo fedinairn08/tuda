@@ -1,11 +1,8 @@
 package com.tuda.controller;
 
 import com.tuda.entity.Event;
-import com.tuda.entity.Request;
 import com.tuda.service.EventService;
-import com.tuda.service.RequestService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +24,7 @@ public class EventController {
     }
 
     @GetMapping("/getByUserId")
-    public List<Event> getEventsByUserId(@Param("id") Long id) {
+    public List<Event> getEventsByUserId(@RequestParam("id") Long id) {
         return eventService.getEventsByUserId(id);
     }
 

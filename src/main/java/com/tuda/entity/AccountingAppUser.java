@@ -1,6 +1,6 @@
 package com.tuda.entity;
 
-import com.tuda.enums.Role;
+import com.tuda.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -28,7 +28,7 @@ public class AccountingAppUser extends AbstractEntity {
 
     private boolean status;
 
-    private Role role;
+    private UserRole userRole;
 
     private String keyId;
 }
