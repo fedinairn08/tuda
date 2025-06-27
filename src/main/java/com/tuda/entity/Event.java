@@ -1,6 +1,6 @@
 package com.tuda.entity;
 
-import com.tuda.enums.Status;
+import com.tuda.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -36,7 +36,8 @@ public class Event extends AbstractEntity {
 
     private int volunteersNumber;
 
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private EventStatus eventStatus;
 
     @OneToOne
     @JoinColumn(name = "photo_id")
