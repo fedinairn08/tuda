@@ -34,8 +34,8 @@ public class AccountingAppUserController extends EntityController<AccountingAppU
     }
 
     @PostMapping("/refuseToParticipate")
-    public void delete(@RequestParam Long id) {
-        accountingUserService.refuseToParticipate(id);
+    public void delete(@RequestParam Long eventId, String userLogin) {
+        accountingUserService.refuse(eventId, userLogin);
     }
 
     @PostMapping("/addAsVolunteerForEvent")
@@ -48,4 +48,17 @@ public class AccountingAppUserController extends EntityController<AccountingAppU
                 serialize(accountingAppUser, ACCOUNTING_APP_USER_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(accountingAppUserResponseDTO));
     }
+
+    @PostMapping("/markPresence")
+    public ResponseEntity<ApiResponse<AccountingAppUserResponseDTO>> markPresence(
+            @RequestParam Long eventId,
+            String userLogin) {
+        AccountingAppUser accountingAppUser =
+                accountingUserService.markPresence(eventId, userLogin);
+        AccountingAppUserResponseDTO accountingAppUserResponseDTO =
+                serialize(accountingAppUser, ACCOUNTING_APP_USER_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(accountingAppUserResponseDTO));
+    }
+
+
 }
