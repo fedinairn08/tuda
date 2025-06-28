@@ -11,11 +11,13 @@ public class EntityController<E extends AbstractEntity> {
 
     protected final ModelMapper modelMapper;
 
-    protected <T> T serialize(E entity, Class<T> toClass) {
+    protected <E, T> T serialize(E entity, Class<T> toClass) {
         return modelMapper.map(entity, toClass);
     }
 
-    protected <T> List<T> serialize(List<E> entities, Class<T> toClass) {
-        return entities.stream().map(it -> serialize(it, toClass)).toList();
+    protected <E, T> List<T> serialize(List<E> entities, Class<T> toClass) {
+        return entities.stream()
+                .map(it -> serialize(it, toClass))
+                .toList();
     }
 }

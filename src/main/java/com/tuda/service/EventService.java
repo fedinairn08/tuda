@@ -1,5 +1,6 @@
 package com.tuda.service;
 
+import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.entity.Event;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,8 +10,8 @@ import java.util.Optional;
 
 public interface EventService {
     List<Event> getAllEvents();
-    Event getEventById(Long id);
-    List<Event> getEventsByUserId(Long id);
-    Event updateEvent(Event event);
-    Event addEvent(Event event);
+    Event getEventById(long id);
+    List<Event> getEventsByUserId(long id);
+    Event updateEvent(EventRequestDTO requestDTO, long id);
+    Event addEvent(EventRequestDTO requestDTO);
 }
