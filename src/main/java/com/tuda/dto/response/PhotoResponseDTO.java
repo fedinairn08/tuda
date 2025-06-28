@@ -6,9 +6,7 @@ import java.util.UUID;
 
 @Data
 public class PhotoResponseDTO {
-    private Long id;
-
-    private UUID uploadId;
+    private UUID uuid;
 
     private String filename;
 }

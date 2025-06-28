@@ -17,3 +17,9 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+s3:
+  url: http://localhost:9000
+  accessKey: root
+  secretKey: minio123
+  bucket: tuda
