@@ -14,10 +14,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     Optional<Request> findByEventIdAndAppUserLogin(Long eventId, String login);
     List<Request> findAllByEventId(Long eventId);
 
-    @Query("SELECT r FROM Request r WHERE r.event.id = :eventId AND r.status = true")
-    List<Request> findActiveByEventId(@Param("eventId") Long eventId);
+    List<Request> findByEventIdAndStatusTrue(Long eventId);
 
     @Modifying
-    @Query("DELETE FROM Request r WHERE r.event.id = :eventId")
-    void deleteAllByEventId(@Param("eventId") Long eventId);
+    void deleteAllByEventId(Long eventId);
 }

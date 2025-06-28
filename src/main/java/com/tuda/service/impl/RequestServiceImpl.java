@@ -84,7 +84,7 @@ public class RequestServiceImpl implements RequestService {
             throw new NotFoundException(String.format("Event not found for id %d", eventId));
         }
 
-        List<Request> activeRequests = requestRepository.findActiveByEventId(eventId);
+        List<Request> activeRequests = requestRepository.findByEventIdAndStatusTrue(eventId);
 
         activeRequests.forEach(request ->
                 accountingUserService.refuse(eventId, request.getAppUser().getLogin())

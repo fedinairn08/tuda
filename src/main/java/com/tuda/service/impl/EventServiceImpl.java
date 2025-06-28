@@ -10,6 +10,7 @@ import com.tuda.repository.UserRepository;
 import com.tuda.service.EventService;
 import com.tuda.service.RequestService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class EventServiceImpl implements EventService {
     private final RequestService requestService;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -52,11 +54,12 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id: " + eventId));
 
-        updateEventFromDto(event, requestDTO);
-
-        if (event.getEventStatus().equals(EventStatus.CANCELLED)) {
+        if (requestDTO.getEventStatus().equals(EventStatus.CANCELLED.toString())) {
             requestService.cancelAllEventRequests(eventId);
         }
+
+        modelMapper.map(requestDTO,event);
+
 
         return eventRepository.save(event);
     }
@@ -65,47 +68,11 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Event addEvent(EventRequestDTO requestDTO) {
         Event event = new Event();
+        modelMapper.map(requestDTO,event);
 
-        updateEventFromDto(event, requestDTO);
         event.setEventStatus(EventStatus.WILL);
 
         return eventRepository.save(event);
-    }
-
-    private void updateEventFromDto(Event event, EventRequestDTO dto) {
-        updateIfNotBlank(event::setTitle, dto.getTitle());
-        updateIfNotBlank(event::setCity, dto.getCity());
-        updateIfNotBlank(event::setDescription, dto.getDescription());
-
-        updateIfPositiveOrZero(event::setParticipantsNumber, dto.getParticipantsNumber());
-        updateIfPositiveOrZero(event::setVolunteersNumber, dto.getVolunteersNumber());
-
-        if (dto.getDate() != null) {
-            event.setDate(dto.getDate());
-        }
-        if (dto.getEventStatus() != null) {
-            event.setEventStatus(dto.getEventStatus());
-        }
-//        if (dto.getOrganization() != null) {
-//            event.setOrganization(organizationRepository.findById(dto.getOrganization())
-//                    .orElseThrow(() -> new NotFoundException(String.format("Organization not found for id %d", dto.getOrganization()))));
-//        }
-//        if (dto.getPhoto() != null) {
-//            event.setPhoto(photoRepository.findById(dto.getPhoto())
-//                    .orElseThrow(() -> new NotFoundException(String.format("Photo not found for id %d", dto.getPhoto()))));
-//        }
-    }
-
-    private void updateIfNotBlank(Consumer<String> setter, String value) {
-        if (value != null && !value.isBlank()) {
-            setter.accept(value);
-        }
-    }
-
-    private void updateIfPositiveOrZero(Consumer<Integer> setter, Integer value) {
-        if (value != null && value >= 0) {
-            setter.accept(value);
-        }
     }
 
 

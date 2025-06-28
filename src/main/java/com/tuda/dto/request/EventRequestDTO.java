@@ -23,7 +23,7 @@ public class EventRequestDTO {
 
     private int volunteersNumber;
 
-    private EventStatus eventStatus;
+    private String eventStatus;
 
     private Long photo;
 }
