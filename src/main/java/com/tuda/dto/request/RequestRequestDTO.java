@@ -8,9 +8,9 @@ import java.time.LocalDate;
 
 @Data
 public class RequestRequestDTO {
-    private AppUser appUser;
+    private AppUserRequestDTO appUser;
 
-    private Event event;
+    private EventRequestDTO event;
 
     private boolean status;
 

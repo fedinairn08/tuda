@@ -1,6 +1,5 @@
 package com.tuda.service.impl;
 
-import com.tuda.dto.request.RequestRequestDTO;
 import com.tuda.entity.AppUser;
 import com.tuda.entity.Event;
 import com.tuda.entity.Request;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,11 +25,17 @@ public class RequestServiceImpl implements RequestService {
     private final AccountingUserService accountingUserService;
 
     @Override
-    public List<Request> getAllRequests() {
-        return requestRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<Request> getAllEventRequests(Long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotFoundException(String.format("Event not found for id %d", eventId));
+        }
+
+        return requestRepository.findAllByEventId(eventId);
     }
 
     @Override
+    @Transactional
     public Request addRequest(Long eventId, String login) {
         AppUser user = userRepository.findByLogin(login).orElseThrow(() ->
                 new NotFoundException(String.format("User with login: %s -- is not found", login)));
@@ -57,7 +61,7 @@ public class RequestServiceImpl implements RequestService {
                         String.format("Request not found for event %d and user %s", eventId, login)));
 
         if (request.isStatus()) {
-            //accountingUserService.refuse(eventId, login);
+            accountingUserService.refuse(eventId, login);
         }
 
         requestRepository.delete(request);
@@ -65,10 +69,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request rejectRequest(Long requestId) {
-        Request request = requestRepository.findById(requestId)
+    public Request rejectRequest(Long eventId, String login) {
+        Request request = requestRepository.findByEventIdAndAppUserLogin(eventId, login)
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("Request not found for id %d",requestId)));
+                        String.format("Request not found for event %d and user %s", eventId, login)));
 
         request.setStatus(false);
         return requestRepository.save(request);
@@ -76,20 +80,16 @@ public class RequestServiceImpl implements RequestService {
 
     @Transactional
     public void cancelAllEventRequests(long eventId) {
-        // 1. Удаляем все заявки
-//        List<Request> requests = requestRepository.findAllByEventId(eventId);
-//
-//        // 2. Отменяем связанные аккаунтинги (если нужно)
-//        requests.stream()
-//                .filter(Request::isActive)
-//                .forEach(request -> {
-//                    accountingUserService.refuse(
-//                            request.getEvent().getId(),
-//                            request.getAppUser().getLogin()
-//                    );
-//                });
-//
-//        // 3. Массовое удаление
-//        requestRepository.deleteAllByEventId(eventId);
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotFoundException(String.format("Event not found for id %d", eventId));
+        }
+
+        List<Request> activeRequests = requestRepository.findActiveByEventId(eventId);
+
+        activeRequests.forEach(request ->
+                accountingUserService.refuse(eventId, request.getAppUser().getLogin())
+        );
+
+        requestRepository.deleteAllByEventId(eventId);
     }
 }

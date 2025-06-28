@@ -38,15 +38,15 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dto));
     }
 
-    @GetMapping("/getByUserId")
-    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByUserId(@RequestParam("id") long id) {
+    @GetMapping("/getByUserId/{id}")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByUserId(@PathVariable long id) {
         List<Event> events = eventService.getEventsByUserId(id);
         List<EventResponseDTO> dtos = serialize(events, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ApiResponse<EventResponseDTO>> updateEvent(@RequestBody EventRequestDTO requestDTO, @PathVariable("id") long id) {
+    public ResponseEntity<ApiResponse<EventResponseDTO>> updateEvent(@RequestBody EventRequestDTO requestDTO, @RequestParam("id") long id) {
         Event updatedEvent = eventService.updateEvent(requestDTO, id);
         EventResponseDTO dto = serialize(updatedEvent, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dto));

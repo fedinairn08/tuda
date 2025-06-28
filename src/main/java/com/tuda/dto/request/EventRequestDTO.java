@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class EventRequestDTO {
-    private Organization organization;
+    private Long organization;
 
     private String city;
 
@@ -25,5 +25,5 @@ public class EventRequestDTO {
 
     private EventStatus eventStatus;
 
-    private Photo photo;
+    private Long photo;
 }

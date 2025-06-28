@@ -24,34 +24,38 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Event getEventById(long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event not found with id: " + id));
     }
 
     @Override
-    public List<Event> getEventsByUserId(long id) {
-        userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + id));
+    @Transactional(readOnly = true)
+    public List<Event> getEventsByUserId(long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException(String.format("User not found for id %d", userId));
+        }
 
-        return eventRepository.getEventsByUserId(id);
+        return eventRepository.getEventsByUserId(userId);
     }
 
     @Override
     @Transactional
-    public Event updateEvent(EventRequestDTO requestDTO, long id) {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Event not found with id: " + id));
+    public Event updateEvent(EventRequestDTO requestDTO, long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found with id: " + eventId));
 
         updateEventFromDto(event, requestDTO);
 
-        if (event.getEventStatus() == EventStatus.CANCELLED) {
-            requestService.cancelAllEventRequests(id); // Каскадное удаление заявок
+        if (event.getEventStatus().equals(EventStatus.CANCELLED)) {
+            requestService.cancelAllEventRequests(eventId);
         }
 
         return eventRepository.save(event);
@@ -82,9 +86,14 @@ public class EventServiceImpl implements EventService {
         if (dto.getEventStatus() != null) {
             event.setEventStatus(dto.getEventStatus());
         }
-        if (dto.getPhoto() != null) {
-            event.setPhoto(dto.getPhoto());
-        }
+//        if (dto.getOrganization() != null) {
+//            event.setOrganization(organizationRepository.findById(dto.getOrganization())
+//                    .orElseThrow(() -> new NotFoundException(String.format("Organization not found for id %d", dto.getOrganization()))));
+//        }
+//        if (dto.getPhoto() != null) {
+//            event.setPhoto(photoRepository.findById(dto.getPhoto())
+//                    .orElseThrow(() -> new NotFoundException(String.format("Photo not found for id %d", dto.getPhoto()))));
+//        }
     }
 
     private void updateIfNotBlank(Consumer<String> setter, String value) {

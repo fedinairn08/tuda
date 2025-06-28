@@ -27,8 +27,8 @@ public class RequestController extends EntityController<Request>{
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<ApiResponse<List<RequestResponseDTO>>> getAllRequests() {
-        List<Request> requests = requestService.getAllRequests();
+    public ResponseEntity<ApiResponse<List<RequestResponseDTO>>> getAllEventRequests(Long eventId) {
+        List<Request> requests = requestService.getAllEventRequests(eventId);
         List<RequestResponseDTO> dtos = serialize(requests, REQUEST_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
@@ -47,8 +47,8 @@ public class RequestController extends EntityController<Request>{
     }
 
     @PostMapping("/rejectVolunteerForEventById")
-    public ResponseEntity<ApiResponse<RequestResponseDTO>> rejectRequest(@RequestParam Long requestId) {
-        Request request = requestService.rejectRequest(requestId);
+    public ResponseEntity<ApiResponse<RequestResponseDTO>> rejectRequest(@RequestParam Long eventId, String userLogin) {
+        Request request = requestService.rejectRequest(eventId, userLogin);
         RequestResponseDTO dto = serialize(request, REQUEST_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dto));
     }
