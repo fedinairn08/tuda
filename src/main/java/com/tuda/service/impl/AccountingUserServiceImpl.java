@@ -11,6 +11,7 @@ import com.tuda.repository.UserRepository;
 import com.tuda.service.AccountingUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +43,12 @@ public class AccountingUserServiceImpl implements AccountingUserService {
     }
 
     @Override
-    public void refuseToParticipate(Long id) {
-        accountingUserRepository.deleteById(id);
+    @Transactional
+    public void refuse(Long eventId, String login) {
+        AppUser user = userRepository.findByLogin(login).orElseThrow(() ->
+                new NotFoundException(String.format("User with login: %s -- is not found", login)));
+
+        accountingUserRepository.deleteByAppUserAndEvent_Id(user, eventId);
     }
 
     @Override
@@ -63,5 +68,20 @@ public class AccountingUserServiceImpl implements AccountingUserService {
                 .build();
 
         return accountingUserRepository.save(accounting);
+    }
+
+    @Override
+    public AccountingAppUser markPresence(Long eventId, String login) {
+        AppUser user = userRepository.findByLogin(login).orElseThrow(() ->
+                new NotFoundException(String.format("User with login: %s -- is not found", login)));
+
+        AccountingAppUser accountingAppUser = accountingUserRepository
+                .findByAppUserAndEvent_Id(user, eventId).orElseThrow(() ->
+                        new NotFoundException(String.format(
+                                "Accounting app user with eventId: %s -- is not found", eventId)));
+
+        accountingAppUser.setStatus(true);
+
+        return accountingUserRepository.save(accountingAppUser);
     }
 }
