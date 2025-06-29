@@ -2,9 +2,9 @@ spring:
   application:
     name: tuda
   datasource:
-    url: jdbc:postgresql://localhost:5432/tuda
-    username: root
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -19,7 +19,7 @@ springdoc:
     path: /swagger-ui
 
 s3:
-  url: http://localhost:9000
-  accessKey: root
-  secretKey: minio123
+  url: ${MINIO_ENDPOINT}
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}
   bucket: tuda

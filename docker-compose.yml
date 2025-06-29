@@ -41,3 +41,25 @@ services:
       retries: 3
     networks:
       - backend
+
+  app:
+    container_name: tuda-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    build:
+      context: .
+    restart: on-failure
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/tuda
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: root
+      MINIO_SECRET_KEY: minio123
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
