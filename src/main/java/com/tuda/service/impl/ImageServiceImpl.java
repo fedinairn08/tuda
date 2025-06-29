@@ -32,9 +32,6 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void delete(String filename) {
         fileService.delete(filename);
-        Photo photoForDelete = photoRepository.findByFilename(filename).orElseThrow(() ->
-                new NotFoundException(String.format("Photo with filename: %s -- is not found", filename)));
-        photoRepository.delete(photoForDelete);
     }
 
     @Override
