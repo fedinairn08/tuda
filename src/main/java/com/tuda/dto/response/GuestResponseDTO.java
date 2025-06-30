@@ -1,6 +1,5 @@
 package com.tuda.dto.response;
 
-import com.tuda.entity.Event;
 import lombok.Data;
 
 @Data

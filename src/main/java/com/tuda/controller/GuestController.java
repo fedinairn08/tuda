@@ -1,20 +1,16 @@
 package com.tuda.controller;
 
+import com.tuda.data.entity.Guest;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.GuestRequestDTO;
 import com.tuda.dto.response.GuestResponseDTO;
-import com.tuda.dto.response.RequestResponseDTO;
-import com.tuda.entity.Event;
-import com.tuda.entity.Guest;
-import com.tuda.entity.Request;
 import com.tuda.service.GuestService;
-import com.tuda.service.RequestService;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/guest")
 @RestController

@@ -1,10 +1,10 @@
 package com.tuda.service.impl;
 
-import com.tuda.entity.AccountingAppUser;
-import com.tuda.entity.AppUser;
-import com.tuda.entity.Event;
-import com.tuda.entity.Request;
-import com.tuda.enums.UserRole;
+import com.tuda.data.entity.AccountingAppUser;
+import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Event;
+import com.tuda.data.entity.Request;
+import com.tuda.data.enums.UserRole;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.AccountingUserRepository;
 import com.tuda.repository.EventRepository;

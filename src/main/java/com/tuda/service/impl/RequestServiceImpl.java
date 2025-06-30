@@ -1,8 +1,8 @@
 package com.tuda.service.impl;
 
-import com.tuda.entity.AppUser;
-import com.tuda.entity.Event;
-import com.tuda.entity.Request;
+import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Event;
+import com.tuda.data.entity.Request;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.EventRepository;
 import com.tuda.repository.RequestRepository;

@@ -1,6 +1,6 @@
 package com.tuda.service;
 
-import com.tuda.entity.AccountingAppUser;
+import com.tuda.data.entity.AccountingAppUser;
 
 public interface AccountingUserService {
     AccountingAppUser createAccountingUserAsParticipant(Long eventId, String clientLogin);

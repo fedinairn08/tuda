@@ -1,9 +1,9 @@
 package com.tuda.controller;
 
+import com.tuda.data.entity.AppUser;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.AppUserRequestDTO;
 import com.tuda.dto.response.AppUserResponseDTO;
-import com.tuda.entity.AppUser;
 import com.tuda.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

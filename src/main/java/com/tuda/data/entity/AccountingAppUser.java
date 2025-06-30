@@ -1,11 +1,11 @@
-package com.tuda.entity;
+package com.tuda.data.entity;
 
-import com.tuda.enums.UserRole;
+import com.tuda.data.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import static com.tuda.entity.AbstractEntity.DEFAULT_GENERATOR;
+import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 
 @Accessors(chain = true)
 @Entity
