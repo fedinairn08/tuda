@@ -1,6 +1,6 @@
 package com.tuda.controller;
 
-import com.tuda.entity.AbstractEntity;
+import com.tuda.data.entity.AbstractEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 

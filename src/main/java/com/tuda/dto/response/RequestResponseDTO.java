@@ -1,9 +1,7 @@
 package com.tuda.dto.response;
 
-import com.tuda.entity.AppUser;
-import com.tuda.entity.Event;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Event;
 import lombok.Data;
 
 import java.time.LocalDate;

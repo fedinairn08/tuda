@@ -1,7 +1,7 @@
 package com.tuda.service;
 
+import com.tuda.data.entity.Event;
 import com.tuda.dto.request.EventRequestDTO;
-import com.tuda.entity.Event;
 
 import java.util.List;
 

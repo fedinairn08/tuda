@@ -1,7 +1,6 @@
 package com.tuda.service;
 
-import com.tuda.dto.request.RequestRequestDTO;
-import com.tuda.entity.Request;
+import com.tuda.data.entity.Request;
 
 import java.util.List;
 

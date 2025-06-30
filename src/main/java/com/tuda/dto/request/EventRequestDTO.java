@@ -1,15 +1,13 @@
 package com.tuda.dto.request;
 
-import com.tuda.entity.Organization;
-import com.tuda.entity.Photo;
-import com.tuda.enums.EventStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class EventRequestDTO {
-    private Long organization;
+    private Long organizationId;
 
     private String city;
 
@@ -25,5 +23,7 @@ public class EventRequestDTO {
 
     private String eventStatus;
 
-    private Long photo;
+    private String filename;
+
+    private UUID uuid;
 }

@@ -1,4 +1,4 @@
-package com.tuda.entity;
+package com.tuda.data.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

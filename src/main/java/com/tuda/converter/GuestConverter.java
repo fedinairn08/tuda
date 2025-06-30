@@ -1,17 +1,13 @@
 package com.tuda.converter;
 
 
-import com.tuda.dto.request.EventRequestDTO;
+import com.tuda.data.entity.Event;
+import com.tuda.data.entity.Guest;
 import com.tuda.dto.request.GuestRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.GuestResponseDTO;
-import com.tuda.dto.response.OrganizationResponseDTO;
-import com.tuda.dto.response.PhotoResponseDTO;
-import com.tuda.entity.Event;
-import com.tuda.entity.Guest;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.EventRepository;
-import com.tuda.repository.GuestRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;

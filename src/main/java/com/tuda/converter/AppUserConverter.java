@@ -1,8 +1,8 @@
 package com.tuda.converter;
 
+import com.tuda.data.entity.AppUser;
 import com.tuda.dto.response.AppUserResponseDTO;
 import com.tuda.dto.response.OrganizationResponseDTO;
-import com.tuda.entity.AppUser;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;

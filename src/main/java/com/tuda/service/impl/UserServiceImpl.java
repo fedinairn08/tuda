@@ -1,7 +1,7 @@
 package com.tuda.service.impl;
 
+import com.tuda.data.entity.AppUser;
 import com.tuda.dto.request.AppUserRequestDTO;
-import com.tuda.entity.AppUser;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.UserService;

@@ -1,12 +1,14 @@
 package com.tuda.service.impl;
 
-import com.tuda.entity.AccountingAppUser;
-import com.tuda.entity.AppUser;
-import com.tuda.entity.Event;
-import com.tuda.enums.UserRole;
+import com.tuda.data.entity.AccountingAppUser;
+import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Event;
+import com.tuda.data.entity.Request;
+import com.tuda.data.enums.UserRole;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.AccountingUserRepository;
 import com.tuda.repository.EventRepository;
+import com.tuda.repository.RequestRepository;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.AccountingUserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class AccountingUserServiceImpl implements AccountingUserService {
     private final EventRepository eventRepository;
 
     private final AccountingUserRepository accountingUserRepository;
+
+    private final RequestRepository requestRepository;
 
     @Override
     public AccountingAppUser createAccountingUserAsParticipant(Long eventId, String login) {
@@ -67,7 +71,14 @@ public class AccountingUserServiceImpl implements AccountingUserService {
                 .keyId("")
                 .build();
 
-        return accountingUserRepository.save(accounting);
+        AccountingAppUser savedVolunteer = accountingUserRepository.save(accounting);
+
+        Request request = requestRepository.findByEventIdAndAppUserLogin(eventId, login).orElseThrow(() ->
+                new NotFoundException("Request -- is not found"));
+        request.setStatus(true);
+        requestRepository.save(request);
+
+        return savedVolunteer;
     }
 
     @Override
