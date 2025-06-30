@@ -1,4 +1,4 @@
-package com.tuda.entity;
+package com.tuda.data.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;
@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 
 import java.util.UUID;
 
-import static com.tuda.entity.AbstractEntity.DEFAULT_GENERATOR;
+import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 
 @Accessors(chain = true)
 @Entity

@@ -1,10 +1,9 @@
 package com.tuda.controller;
 
+import com.tuda.data.entity.Event;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
-import com.tuda.entity.AppUser;
-import com.tuda.entity.Event;
 import com.tuda.service.EventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

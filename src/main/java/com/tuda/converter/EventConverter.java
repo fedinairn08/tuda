@@ -1,9 +1,9 @@
 package com.tuda.converter;
 
+import com.tuda.data.entity.Event;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.OrganizationResponseDTO;
 import com.tuda.dto.response.PhotoResponseDTO;
-import com.tuda.entity.Event;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;

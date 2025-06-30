@@ -1,4 +1,4 @@
-package com.tuda.enums;
+package com.tuda.data.enums;
 
 public enum UserRole {
     PARTICIPANT,

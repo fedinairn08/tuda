@@ -1,7 +1,7 @@
 package com.tuda.service;
 
+import com.tuda.data.entity.AppUser;
 import com.tuda.dto.request.AppUserRequestDTO;
-import com.tuda.entity.AppUser;
 
 public interface UserService {
     AppUser getById(long id);

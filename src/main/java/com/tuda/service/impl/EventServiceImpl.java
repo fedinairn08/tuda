@@ -1,9 +1,9 @@
 package com.tuda.service.impl;
 
+import com.tuda.data.entity.Event;
+import com.tuda.data.entity.Photo;
+import com.tuda.data.enums.EventStatus;
 import com.tuda.dto.request.EventRequestDTO;
-import com.tuda.entity.Event;
-import com.tuda.entity.Photo;
-import com.tuda.enums.EventStatus;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.EventRepository;
 import com.tuda.repository.PhotoRepository;
@@ -11,6 +11,7 @@ import com.tuda.repository.UserRepository;
 import com.tuda.service.EventService;
 import com.tuda.service.RequestService;
 import com.tuda.service.file.FileService;
+import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class EventServiceImpl implements EventService {
     private final ModelMapper modelMapper;
     private final PhotoRepository photoRepository;
     private final FileService fileService;
+    private final Counter eventCounter;
 
     @Override
     @Transactional(readOnly = true)
@@ -100,6 +102,8 @@ public class EventServiceImpl implements EventService {
             photoRepository.save(photo);
             event.setPhoto(photo);
         }
+
+        eventCounter.increment();
 
         return eventRepository.save(event);
     }

@@ -1,6 +1,6 @@
 package com.tuda.service.impl;
 
-import com.tuda.entity.Photo;
+import com.tuda.data.entity.Photo;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.PhotoRepository;
 import com.tuda.s3storage.S3File;

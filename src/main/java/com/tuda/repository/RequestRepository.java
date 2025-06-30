@@ -1,11 +1,8 @@
 package com.tuda.repository;
 
-import com.tuda.entity.Event;
-import com.tuda.entity.Request;
+import com.tuda.data.entity.Request;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.tuda.repository;
 
-import com.tuda.entity.Photo;
+import com.tuda.data.entity.Photo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
