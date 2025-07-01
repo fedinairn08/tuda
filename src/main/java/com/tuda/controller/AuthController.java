@@ -1,6 +1,7 @@
 package com.tuda.controller;
 
-import com.tuda.dto.request.JwtRequestDTO;
+import com.tuda.dto.request.JwtLoginRequestDTO;
+import com.tuda.dto.request.JwtSignUpRequestDTO;
 import com.tuda.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody JwtRequestDTO authRequest) {
+    public ResponseEntity<?> authenticate(@RequestBody JwtLoginRequestDTO authRequest) {
         return authService.createAuthToken(authRequest);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody JwtSignUpRequestDTO register) {
+        return authService.register(register);
     }
 
 }

@@ -1,11 +1,14 @@
 package com.tuda.service.impl;
 
 import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Event;
 import com.tuda.dto.request.AppUserRequestDTO;
+import com.tuda.dto.request.JwtSignUpRequestDTO;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,6 +26,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public AppUser getById(long id) {
@@ -68,4 +72,5 @@ public class UserServiceImpl implements UserService {
         String role = user.getOrganization() != null ? "ROLE_ORGANIZER" : "ROLE_USER";
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
+
 }

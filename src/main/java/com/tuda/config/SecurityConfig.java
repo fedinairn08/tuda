@@ -45,11 +45,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
+                                "/event/getAll",
+                                "/event/getById/**",
+                                "/guest/add",
+                                "/accountingAppUser/addAsParticipantForEvent",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
-                        .requestMatchers("/auth", "/event/getAll", "/event/getById/", "accountingAppUser/addAsParticipantForEvent").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
