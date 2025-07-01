@@ -32,4 +32,8 @@ public class AppUser extends AbstractEntity {
     private Organization organization;
 
     private String phoneNumber;
+
+    public String getFullName() {
+        return this.lastName + " " + this.name + " " + this.patronymic;
+    }
 }
