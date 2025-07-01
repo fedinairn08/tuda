@@ -6,7 +6,17 @@ import com.tuda.exception.NotFoundException;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,4 +47,25 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) {
+        AppUser appUser = getByLogin(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return User.builder()
+                .username(appUser.getLogin())
+                .password(appUser.getPassword())
+                .authorities(getAuthorities(appUser))
+                .build();
+    }
+
+    private Optional<AppUser> getByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities(AppUser user) {
+        String role = user.getOrganization() != null ? "ROLE_ORGANIZER" : "ROLE_USER";
+        return Collections.singletonList(new SimpleGrantedAuthority(role));
+    }
 }

@@ -18,6 +18,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
+jwt:
+  secret: WX5bD8z2FkPqJtRvY7uAeHcLmNpKs4V9wCxE1Z3B6yG0UjIiOoQnMlXaSdRfTg
+  lifetime: 30m
+
 s3:
   url: ${MINIO_ENDPOINT}
   accessKey: ${MINIO_ACCESS_KEY}
