@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/auth").permitAll()
+                        .requestMatchers("/auth", "/event/getAll", "/event/getById/", "accountingAppUser/addAsParticipantForEvent").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
