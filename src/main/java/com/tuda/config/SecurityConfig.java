@@ -48,7 +48,6 @@ public class SecurityConfig {
                                 "/event/getAll",
                                 "/event/getById/**",
                                 "/guest/add",
-                                "/accountingAppUser/addAsParticipantForEvent",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
