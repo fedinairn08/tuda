@@ -1,9 +1,6 @@
 package com.tuda.service.impl;
 
-import com.tuda.data.entity.AccountingAppUser;
-import com.tuda.data.entity.Event;
-import com.tuda.data.entity.Guest;
-import com.tuda.data.entity.Photo;
+import com.tuda.data.entity.*;
 import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.ParticipantType;
 import com.tuda.dto.request.EventRequestDTO;
@@ -34,6 +31,7 @@ public class EventServiceImpl implements EventService {
     private final FileService fileService;
     private final Counter eventCounter;
     private final GuestRepository guestRepository;
+    private final OrganizationRepository organizationRepository;
     private final AccountingUserRepository accountingUserRepository;
 
     @Override
@@ -97,10 +95,15 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event addEvent(EventRequestDTO requestDTO) {
-        Event event = new Event();
-        modelMapper.map(requestDTO,event);
+        Event event = modelMapper.map(requestDTO, Event.class);
 
         event.setEventStatus(EventStatus.WILL);
+
+        if (requestDTO.getOrganizationId() != null) {
+            Organization organization = organizationRepository.findById(requestDTO.getOrganizationId())
+                    .orElseThrow(() -> new NotFoundException("Organization not found with id " + requestDTO.getOrganizationId()));
+            event.setOrganization(organization);
+        }
 
         if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null) {
             Photo photo = new Photo(requestDTO.getUploadId(), requestDTO.getFilename());
