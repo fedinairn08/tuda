@@ -1,6 +1,7 @@
 package com.tuda.converter;
 
 import com.tuda.data.entity.Event;
+import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.OrganizationResponseDTO;
 import com.tuda.dto.response.PhotoResponseDTO;
@@ -21,6 +22,9 @@ public class EventConverter {
         modelMapper
                 .createTypeMap(Event.class, EventResponseDTO.class)
                 .setPostConverter(getConverter());
+        modelMapper.typeMap(EventRequestDTO.class, Event.class)
+                .addMappings(mapper -> mapper.skip(Event::setId));
+
     }
 
     Converter<Event, EventResponseDTO> getConverter() {
