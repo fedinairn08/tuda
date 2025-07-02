@@ -25,5 +25,5 @@ public class EventRequestDTO {
 
     private String filename;
 
-    private UUID uuid;
+    private UUID uploadId;
 }

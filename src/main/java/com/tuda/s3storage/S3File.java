@@ -9,13 +9,13 @@ import java.util.UUID;
 @Setter
 public class S3File {
     private String filename;
-    private UUID uuid;
+    private UUID uploadId;
     private byte[] content;
 
     public S3File(String filename, byte[] content) {
         this.filename = filename;
         this.content = content;
-        this.uuid = UUID.randomUUID();
+        this.uploadId = UUID.randomUUID();
     }
 
     public S3File(String filename) {

@@ -1,9 +1,10 @@
 package com.tuda.controller;
 
-import com.tuda.data.entity.Event;
+import com.tuda.data.entity.*;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
+import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.service.EventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +54,14 @@ public class EventController extends EntityController<Event> {
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<EventResponseDTO>> addEvent(@RequestBody EventRequestDTO requestDTO) {
-        Event updatedEvent = eventService.addEvent(requestDTO);
-        EventResponseDTO dto = serialize(updatedEvent, EVENT_RESPONSE_DTO_CLASS);
+        Event newEvent = eventService.addEvent(requestDTO);
+        EventResponseDTO dto = serialize(newEvent, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dto));
+    }
+
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<ApiResponse<List<EventParticipantResponseDTO>>> getParticipantsByEventId(@PathVariable("id") long eventId) {
+        List<EventParticipantResponseDTO> participantsDTO = eventService.getAllParticipantsByEventId(eventId);
+        return ResponseEntity.ok(new ApiResponse<>(participantsDTO));
     }
 }
