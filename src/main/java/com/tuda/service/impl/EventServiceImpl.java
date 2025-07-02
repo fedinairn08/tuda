@@ -71,22 +71,22 @@ public class EventServiceImpl implements EventService {
 
         modelMapper.map(requestDTO,event);
 
-        if (requestDTO.getFilename() != null && requestDTO.getUuid() != null && Objects.isNull(event.getPhoto())) {
-            Photo photo = new Photo(requestDTO.getUuid(), requestDTO.getFilename());
+        if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null && Objects.isNull(event.getPhoto())) {
+            Photo photo = new Photo(requestDTO.getUploadId(), requestDTO.getFilename());
             photoRepository.save(photo);
             event.setPhoto(photo);
-        } else if (requestDTO.getFilename() == null && requestDTO.getUuid() == null
+        } else if (requestDTO.getFilename() == null && requestDTO.getUploadId() == null
                 && Objects.nonNull(event.getPhoto())) {
             fileService.delete(event.getPhoto().getFilename());
             photoRepository.delete(event.getPhoto());
             event.setPhoto(null);
-        } else if (requestDTO.getFilename() != null && requestDTO.getUuid() != null) {
+        } else if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null) {
             fileService.delete(event.getPhoto().getFilename());
 
             Photo photo = photoRepository.findById(event.getPhoto().getId())
                     .orElseThrow(() -> new NotFoundException("Photo not found with id: " + event.getPhoto().getId()));
 
-            photo.setFilename(requestDTO.getFilename()).setUploadId(requestDTO.getUuid());
+            photo.setFilename(requestDTO.getFilename()).setUploadId(requestDTO.getUploadId());
             photoRepository.save(photo);
 
             event.setPhoto(photo);
@@ -102,8 +102,8 @@ public class EventServiceImpl implements EventService {
 
         event.setEventStatus(EventStatus.WILL);
 
-        if (requestDTO.getFilename() != null && requestDTO.getUuid() != null) {
-            Photo photo = new Photo(requestDTO.getUuid(), requestDTO.getFilename());
+        if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null) {
+            Photo photo = new Photo(requestDTO.getUploadId(), requestDTO.getFilename());
             photoRepository.save(photo);
             event.setPhoto(photo);
         }
