@@ -1,6 +1,7 @@
 package com.tuda.service;
 
 import com.tuda.data.entity.Event;
+import com.tuda.data.enums.EventStatus;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 
@@ -13,4 +14,5 @@ public interface EventService {
     Event updateEvent(EventRequestDTO requestDTO, long id);
     Event addEvent(EventRequestDTO requestDTO);
     List<EventParticipantResponseDTO> getAllParticipantsByEventId(long id);
+    List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId);
 }
