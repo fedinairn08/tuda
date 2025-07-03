@@ -3,10 +3,7 @@ name: tuda CI/CD
 on:
   push:
     paths:
-      - 'tuda/**'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - '.github/workflows/tuda.yml'
+      - '**'
 
 env:
   REGISTRY: ghcr.io
