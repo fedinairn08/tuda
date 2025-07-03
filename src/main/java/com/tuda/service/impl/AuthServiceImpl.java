@@ -31,19 +31,15 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
     private final OrganizationRepository organizationRepository;
-    private final AppUserConverter appUserConverter;
 
-    public AuthServiceImpl(UserService userService, JwtTokenUtils jwtTokenUtils, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, UserRepository userRepository, ModelMapper modelMapper, OrganizationRepository organizationRepository, AppUserConverter appUserConverter) {
+    public AuthServiceImpl(UserService userService, JwtTokenUtils jwtTokenUtils, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, UserRepository userRepository, OrganizationRepository organizationRepository) {
         this.userService = userService;
         this.jwtTokenUtils = jwtTokenUtils;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
         this.organizationRepository = organizationRepository;
-        this.appUserConverter = appUserConverter;
     }
 
     public ResponseEntity<?> createAuthToken(JwtLoginRequestDTO authRequest) {

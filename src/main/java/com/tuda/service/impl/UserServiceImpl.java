@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public AppUser getById(long id) {
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
                 .setLastName(requestDTO.getLastName())
                 .setPatronymic(requestDTO.getPatronymic())
                 .setLogin(requestDTO.getLogin())
-                .setPassword(requestDTO.getPassword())
+                .setPassword(passwordEncoder.encode(requestDTO.getPassword()))
                 .setPhoneNumber(requestDTO.getPhoneNumber());
 
         return userRepository.save(user);
