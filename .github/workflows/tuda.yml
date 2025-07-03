@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.GIT_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -f ./tuda/Dockerfile -t ${{ env.REGISTRY}}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest .
+        run: docker build -f ./Dockerfile -t ${{ env.REGISTRY}}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest .
 
       - name: Push Docker image
         run: docker push ${{ env.REGISTRY}}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest
