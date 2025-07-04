@@ -119,6 +119,10 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<EventParticipantResponseDTO> getAllParticipantsByEventId(long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotFoundException("Event not found with id: " + eventId);
+        }
+
         List<Guest> guests = guestRepository.findAllByEventId(eventId);
         List<AccountingAppUser> accountingAppUsers = accountingUserRepository.findAllByEventId(eventId);
 
@@ -141,12 +145,18 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId) {
+        if (!userRepository.existsById(appUserId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
+        }
         return eventRepository.findAllByStatusAndAppUserId(appUserId, status.toString());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Event> getOrganizationEventsByOrganizerId(long organizerId) {
+        if (!userRepository.existsById(organizerId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", organizerId));
+        }
         return eventRepository.findAllOrganizationEventsByOrganizerId(organizerId);
     }
 }

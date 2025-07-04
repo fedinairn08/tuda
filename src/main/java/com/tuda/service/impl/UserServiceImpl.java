@@ -8,6 +8,7 @@ import com.tuda.data.enums.UserRole;
 import com.tuda.dto.request.AppUserRequestDTO;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.AccountingUserRepository;
+import com.tuda.repository.EventRepository;
 import com.tuda.repository.RequestRepository;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.UserService;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AccountingUserRepository accountingUserRepository;
     private final RequestRepository requestRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public AppUser getById(long id) {
@@ -51,6 +53,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public EventUserStatus getUserEventStatusByAppUserIdAndEventId(long appUserId, long eventId) {
+        if (!userRepository.existsById(appUserId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
+        }
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotFoundException(String.format("Event with id: %s -- is not found", eventId));
+        }
+
         Optional<AccountingAppUser> accountingAppUserOptional =
                 accountingUserRepository.findByAppUserIdAndEventId(appUserId, eventId);
 
@@ -66,9 +75,9 @@ public class UserServiceImpl implements UserService {
                 requestRepository.findByAppUserIdAndEventId(appUserId, eventId);
         if (requestOptional.isPresent()) {
             return EventUserStatus.USER_WITH_REQUEST;
-        } else {
-            return EventUserStatus.USER;
         }
+
+        return EventUserStatus.USER;
     }
 
 }
