@@ -6,4 +6,5 @@ import com.tuda.dto.request.OrganizationRequestDTO;
 
 public interface OrganizationService {
     Organization addOrganization(OrganizationRequestDTO organizationRequestDTO);
+    Organization updateOrganization(OrganizationRequestDTO organizationRequestDTO, Long organizationId);
 }
