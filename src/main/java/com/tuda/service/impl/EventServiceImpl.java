@@ -137,4 +137,10 @@ public class EventServiceImpl implements EventService {
 
         return participants;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId) {
+        return eventRepository.findAllByStatusAndAppUserId(appUserId, status.toString());
+    }
 }
