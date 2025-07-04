@@ -1,6 +1,7 @@
 package com.tuda.controller;
 
 import com.tuda.data.entity.*;
+import com.tuda.data.enums.EventStatus;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
@@ -64,4 +65,19 @@ public class EventController extends EntityController<Event> {
         List<EventParticipantResponseDTO> participantsDTO = eventService.getAllParticipantsByEventId(eventId);
         return ResponseEntity.ok(new ApiResponse<>(participantsDTO));
     }
+
+    @GetMapping("/filterByStatusAndAppUserId")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserId(@RequestParam EventStatus status, @RequestParam long appUserId) {
+        List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserId(status, appUserId);
+        List<EventResponseDTO> dtos = serialize(filteredEvents, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @GetMapping("/getEventsByOrganizerId")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getOrganizationEventsByOrganizerId(@RequestParam long organizerId) {
+        List<Event> organizerEvents = eventService.getOrganizationEventsByOrganizerId(organizerId);
+        List<EventResponseDTO> dtos = serialize(organizerEvents, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
 }
