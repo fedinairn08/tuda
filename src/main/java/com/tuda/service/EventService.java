@@ -15,4 +15,5 @@ public interface EventService {
     Event addEvent(EventRequestDTO requestDTO);
     List<EventParticipantResponseDTO> getAllParticipantsByEventId(long id);
     List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId);
+    List<Event> getOrganizationEventsByOrganizerId(long organizerId);
 }

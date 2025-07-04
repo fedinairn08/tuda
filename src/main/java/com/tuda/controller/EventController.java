@@ -67,10 +67,16 @@ public class EventController extends EntityController<Event> {
     }
 
     @GetMapping("/filterByStatusAndAppUserId")
-    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserId(@RequestParam EventStatus status,
-                                                                                             @RequestParam long appUserId) {
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserId(@RequestParam EventStatus status, @RequestParam long appUserId) {
         List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserId(status, appUserId);
         List<EventResponseDTO> dtos = serialize(filteredEvents, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @GetMapping("/getEventsByOrganizerId")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getOrganizationEventsByOrganizerId(@RequestParam long organizerId) {
+        List<Event> organizerEvents = eventService.getOrganizationEventsByOrganizerId(organizerId);
+        List<EventResponseDTO> dtos = serialize(organizerEvents, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
