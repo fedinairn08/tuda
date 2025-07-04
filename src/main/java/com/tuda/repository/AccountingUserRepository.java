@@ -13,4 +13,6 @@ public interface AccountingUserRepository extends JpaRepository<AccountingAppUse
     void deleteByAppUserAndEvent_Id(AppUser user, Long eventId);
 
     List<AccountingAppUser> findAllByEventId(Long eventId);
+
+    Optional<AccountingAppUser> findByAppUserIdAndEventId(Long appUserId, Long eventId);
 }

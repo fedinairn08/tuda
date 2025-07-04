@@ -15,4 +15,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Modifying
     void deleteAllByEventId(Long eventId);
+
+    Optional<Request> findByAppUserIdAndEventId(Long appUserId, Long eventId);
 }

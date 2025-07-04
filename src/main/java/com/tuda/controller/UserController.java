@@ -1,6 +1,7 @@
 package com.tuda.controller;
 
 import com.tuda.data.entity.AppUser;
+import com.tuda.data.enums.EventUserStatus;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.AppUserRequestDTO;
 import com.tuda.dto.response.AppUserResponseDTO;
@@ -35,4 +36,13 @@ public class UserController extends EntityController<AppUser> {
         AppUserResponseDTO appUserResponseDTO = serialize(user, APP_USER_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(appUserResponseDTO));
     }
+
+    @GetMapping("/getEventStatus")
+    public ResponseEntity<ApiResponse<EventUserStatus>> getUserEventStatus(@RequestParam long appUserId,
+                                                                       @RequestParam long eventId) {
+        EventUserStatus status = userService.getUserEventStatusByAppUserIdAndEventId(appUserId, eventId);
+        return ResponseEntity.ok(new ApiResponse<>(status));
+    }
+
+
 }
