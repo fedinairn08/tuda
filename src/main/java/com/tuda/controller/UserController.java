@@ -6,12 +6,14 @@ import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.AppUserRequestDTO;
 import com.tuda.dto.response.AppUserResponseDTO;
 import com.tuda.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@SecurityRequirement(name = "JWT")
 public class UserController extends EntityController<AppUser> {
 
     private final UserService userService;

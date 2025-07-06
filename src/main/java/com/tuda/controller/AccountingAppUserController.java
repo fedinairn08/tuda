@@ -4,6 +4,7 @@ import com.tuda.data.entity.AccountingAppUser;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.response.AccountingAppUserResponseDTO;
 import com.tuda.service.AccountingUserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/accountingAppUser")
+@SecurityRequirement(name = "JWT")
 public class AccountingAppUserController extends EntityController<AccountingAppUser> {
 
     private final AccountingUserService accountingUserService;

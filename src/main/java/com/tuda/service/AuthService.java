@@ -1,10 +1,10 @@
 package com.tuda.service;
 
-import com.tuda.dto.request.JwtLoginRequestDTO;
+import com.tuda.dto.request.JwtSignInRequestDTO;
 import com.tuda.dto.request.JwtSignUpRequestDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    ResponseEntity<?> createAuthToken(JwtLoginRequestDTO authRequest);
-    ResponseEntity<?> register(JwtSignUpRequestDTO register);
+    ResponseEntity<?> signIn(JwtSignInRequestDTO authRequest);
+    ResponseEntity<?> signUp(JwtSignUpRequestDTO register);
 }

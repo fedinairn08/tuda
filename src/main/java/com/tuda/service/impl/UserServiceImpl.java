@@ -6,6 +6,7 @@ import com.tuda.data.entity.Request;
 import com.tuda.data.enums.EventUserStatus;
 import com.tuda.data.enums.UserRole;
 import com.tuda.dto.request.AppUserRequestDTO;
+import com.tuda.exception.BadRequestException;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.AccountingUserRepository;
 import com.tuda.repository.RequestRepository;
@@ -40,6 +41,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() ->
                         new NotFoundException(String.format("User with id: %s -- is not found", id))
         );
+    }
+
+    public Optional<AppUser> getByLogin(String login) {
+        return userRepository.findByLogin(login);
     }
 
     @Override
@@ -80,21 +85,23 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public AppUser create(AppUser user) {
+        if (userRepository.existsByLogin(user.getLogin())) {
+            throw new BadRequestException("Пользователь с таким именем уже существует");
+        }
+        return userRepository.save(user);
+    }
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) {
-        AppUser appUser = getByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        AppUser appUser = getByLogin(username).get();
 
         return User.builder()
                 .username(appUser.getLogin())
                 .password(appUser.getPassword())
                 .authorities(getAuthorities(appUser))
                 .build();
-    }
-
-    private Optional<AppUser> getByLogin(String login) {
-        return userRepository.findByLogin(login);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(AppUser user) {

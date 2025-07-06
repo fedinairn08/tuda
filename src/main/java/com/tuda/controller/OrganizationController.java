@@ -5,6 +5,7 @@ import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.OrganizationRequestDTO;
 import com.tuda.dto.response.OrganizationResponseDTO;
 import com.tuda.service.OrganizationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/organization")
+@SecurityRequirement(name = "JWT")
 public class OrganizationController extends EntityController<Organization> {
     private final OrganizationService organizationService;
 

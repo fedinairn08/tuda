@@ -1,6 +1,6 @@
 package com.tuda.controller;
 
-import com.tuda.dto.request.JwtLoginRequestDTO;
+import com.tuda.dto.request.JwtSignInRequestDTO;
 import com.tuda.dto.request.JwtSignUpRequestDTO;
 import com.tuda.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody JwtLoginRequestDTO authRequest) {
-        return authService.createAuthToken(authRequest);
+    public ResponseEntity<?> signIn(@RequestBody JwtSignInRequestDTO authRequest) {
+        return authService.signIn(authRequest);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody JwtSignUpRequestDTO register) {
-        return authService.register(register);
+    public ResponseEntity<?> signUp(@RequestBody JwtSignUpRequestDTO register) {
+        return authService.signUp(register);
     }
 
 }

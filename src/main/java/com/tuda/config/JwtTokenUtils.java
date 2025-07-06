@@ -36,11 +36,15 @@ public class JwtTokenUtils {
                 .collect(Collectors.toList());
         claims.put("roles", rolesList);
 
+        return generateToken(claims, userDetails);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + jwtLifetime.toMillis());
 
         return Jwts.builder()
-                .claims(claims)
+                .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(issuedDate)
                 .expiration(expiredDate)

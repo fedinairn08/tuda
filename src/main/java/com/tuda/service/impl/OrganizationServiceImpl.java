@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class OrganizationServiceImpl implements OrganizationService {
@@ -22,5 +24,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.setName(organizationRequestDTO.getName());
         organization.setPhoneNumber(organizationRequestDTO.getPhoneNumber());
         return organizationRepository.save(organization);
+    }
+
+    @Override
+    public Optional<Organization> getByName(String organizationName) {
+        return organizationRepository.findByName(organizationName);
     }
 }
