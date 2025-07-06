@@ -2,6 +2,8 @@ package com.tuda.controller;
 
 import com.tuda.dto.request.JwtSignInRequestDTO;
 import com.tuda.dto.request.JwtSignUpRequestDTO;
+import com.tuda.dto.request.JwtRefreshRequestDTO;
+import com.tuda.dto.response.JwtResponseDTO;
 import com.tuda.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> signIn(@RequestBody JwtSignInRequestDTO authRequest) {
-        return authService.signIn(authRequest);
+    public ResponseEntity<JwtResponseDTO> signIn(@RequestBody JwtSignInRequestDTO authRequest) {
+        return ResponseEntity.ok(authService.signIn(authRequest));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> signUp(@RequestBody JwtSignUpRequestDTO register) {
-        return authService.signUp(register);
+    public ResponseEntity<JwtResponseDTO> signUp(@RequestBody JwtSignUpRequestDTO register) {
+        return  ResponseEntity.ok(authService.signUp(register));
     }
 
+    @PostMapping("refresh")
+    public ResponseEntity<JwtResponseDTO> getNewRefreshToken(@RequestBody JwtRefreshRequestDTO request) {
+        return  ResponseEntity.ok(authService.refresh(request));
+    }
 }

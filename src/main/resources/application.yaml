@@ -21,8 +21,10 @@ springdoc:
 
 
 jwt:
-  secret: WX5bD8z2FkPqJtRvY7uAeHcLmNpKs4V9wCxE1Z3B6yG0UjIiOoQnMlXaSdRfTg
-  lifetime: 30m
+  jwtAccessSecret: WX5bD8z2FkPqJtRvY7uAeHcLmNpKs4V9wCxE1Z3B6yG0UjIiOoQnMlXaSdRfTg
+  jwtRefreshSecret: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==
+  accessLifetime: PT15M
+  refreshLifetime: P30D
 
 s3:
   url: ${MINIO_ENDPOINT}

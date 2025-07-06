@@ -1,9 +1,10 @@
 package com.tuda.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.tuda.exception.BadRequestException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,57 +21,103 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenUtils {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    @Value("${jwt.jwtAccessSecret}")
+    private String jwtAccessSecret;
 
-    @Value("${jwt.lifetime}")
-    private Duration jwtLifetime;
+    @Value("${jwt.jwtRefreshSecret}")
+    private String jwtRefreshSecret;
 
-    public String generateToken(UserDetails userDetails, Long userId) {
-        Map<String, Object> claims = new HashMap<>();
+    @Value("${jwt.accessLifetime}")
+    private Duration accessLifetime;
 
-        claims.put("id", userId);
+    @Value("${jwt.refreshLifetime}")
+    private Duration refreshLifetime;
 
-        List<String> rolesList = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        claims.put("roles", rolesList);
-
-        return generateToken(claims, userDetails);
+    public String generateAccessToken(UserDetails userDetails, Long userId) {
+        return generateToken(userDetails, userId, getAccessSigningKey(), accessLifetime);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateRefreshToken(UserDetails userDetails, Long userId) {
+        return generateToken(userDetails, userId, getRefreshSigningKey(), refreshLifetime);
+    }
+
+    private String generateToken(UserDetails userDetails, Long userId, SecretKey key, Duration lifetime) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userId);
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        claims.put("roles", roles);
+
         Date issuedDate = new Date();
-        Date expiredDate = new Date(issuedDate.getTime() + jwtLifetime.toMillis());
+        Date expiredDate = new Date(issuedDate.getTime() + lifetime.toMillis());
 
         return Jwts.builder()
-                .claims(extraClaims)
+                .claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(issuedDate)
                 .expiration(expiredDate)
-                .signWith(getSigningKey())
+                .signWith(key)
                 .compact();
     }
 
+    public boolean validateRefreshToken(String token) {
+        return validateToken(token, getRefreshSigningKey());
+    }
+
+    private boolean validateToken(String token, SecretKey key) {
+        try {
+            Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            throw new BadRequestException("Токен просрочен");
+        } catch (UnsupportedJwtException e) {
+            throw new BadRequestException("Неподдерживаемый токен");
+        } catch (MalformedJwtException e) {
+            throw new BadRequestException("Некорректный формат токена");
+        } catch (SignatureException e) {
+            throw new BadRequestException("Неверная подпись");
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Пустой или null токен");
+        }
+    }
+
     public String getUsername(String token) {
-        return parseToken(token).getSubject();
+        return parseAccessToken(token).getSubject();
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> getRoles(String token) {
-        return parseToken(token).get("roles", List.class);
+        return (List<String>) parseAccessToken(token).get("roles");
     }
 
-    private Claims parseToken(String token) {
+    public Claims parseAccessToken(String token) {
+        return parseToken(token, getAccessSigningKey());
+    }
+
+    public Claims parseRefreshToken(String token) {
+        return parseToken(token, getRefreshSigningKey());
+    }
+
+    private Claims parseToken(String token, SecretKey key) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+    private SecretKey getAccessSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtAccessSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    private SecretKey getRefreshSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtRefreshSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 }
