@@ -1,6 +1,10 @@
 package com.tuda.converter;
 
 import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Guest;
+import com.tuda.data.entity.Organization;
+import com.tuda.dto.request.GuestRequestDTO;
+import com.tuda.dto.request.JwtSignUpRequestDTO;
 import com.tuda.dto.response.AppUserResponseDTO;
 import com.tuda.dto.response.OrganizationResponseDTO;
 import jakarta.annotation.PostConstruct;
@@ -19,6 +23,7 @@ public class AppUserConverter {
         modelMapper
                 .createTypeMap(AppUser.class, AppUserResponseDTO.class)
                 .setPostConverter(getConverter());
+
     }
 
     Converter<AppUser, AppUserResponseDTO> getConverter() {

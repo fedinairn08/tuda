@@ -4,6 +4,7 @@ import com.tuda.dto.ApiResponse;
 import com.tuda.dto.response.PhotoResponseDTO;
 import com.tuda.s3storage.S3File;
 import com.tuda.service.ImageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,7 @@ public class ImageController {
 
     private static final Class<PhotoResponseDTO> PHOTO_RESPONSE_DTO_CLASS = PhotoResponseDTO.class;
 
+    @SecurityRequirement(name = "JWT")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<PhotoResponseDTO>> uploadImage(
             @RequestPart("file") MultipartFile file) {
@@ -32,6 +34,7 @@ public class ImageController {
         return ResponseEntity.ok(new ApiResponse<>(modelMapper.map(s3File, PHOTO_RESPONSE_DTO_CLASS)));
     }
 
+    @SecurityRequirement(name = "JWT")
     @PostMapping(value = "/delete")
     public void deleteImage(@RequestParam String filename) {
         imageService.delete(filename);
