@@ -6,24 +6,16 @@ import com.tuda.data.entity.Request;
 import com.tuda.data.enums.EventUserStatus;
 import com.tuda.data.enums.UserRole;
 import com.tuda.dto.request.AppUserRequestDTO;
-import com.tuda.exception.BadRequestException;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.AccountingUserRepository;
+import com.tuda.repository.EventRepository;
 import com.tuda.repository.RequestRepository;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -33,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AccountingUserRepository accountingUserRepository;
     private final RequestRepository requestRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final EventRepository eventRepository;
 
     @Override
     public AppUser getById(long id) {
@@ -41,10 +33,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() ->
                         new NotFoundException(String.format("User with id: %s -- is not found", id))
         );
-    }
-
-    public Optional<AppUser> getByLogin(String login) {
-        return userRepository.findByLogin(login);
     }
 
     @Override
@@ -56,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 .setLastName(requestDTO.getLastName())
                 .setPatronymic(requestDTO.getPatronymic())
                 .setLogin(requestDTO.getLogin())
-                .setPassword(passwordEncoder.encode(requestDTO.getPassword()))
+                .setPassword(requestDTO.getPassword())
                 .setPhoneNumber(requestDTO.getPhoneNumber());
 
         return userRepository.save(user);
@@ -65,6 +53,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public EventUserStatus getUserEventStatusByAppUserIdAndEventId(long appUserId, long eventId) {
+        if (!userRepository.existsById(appUserId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
+        }
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotFoundException(String.format("Event with id: %s -- is not found", eventId));
+        }
+
         Optional<AccountingAppUser> accountingAppUserOptional =
                 accountingUserRepository.findByAppUserIdAndEventId(appUserId, eventId);
 
@@ -80,32 +75,9 @@ public class UserServiceImpl implements UserService {
                 requestRepository.findByAppUserIdAndEventId(appUserId, eventId);
         if (requestOptional.isPresent()) {
             return EventUserStatus.USER_WITH_REQUEST;
-        } else {
-            return EventUserStatus.USER;
         }
+
+        return EventUserStatus.USER;
     }
 
-    public AppUser create(AppUser user) {
-        if (userRepository.existsByLogin(user.getLogin())) {
-            throw new BadRequestException("Пользователь с таким именем уже существует");
-        }
-        return userRepository.save(user);
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) {
-        AppUser appUser = getByLogin(username).get();
-
-        return User.builder()
-                .username(appUser.getLogin())
-                .password(appUser.getPassword())
-                .authorities(getAuthorities(appUser))
-                .build();
-    }
-
-    private Collection<? extends GrantedAuthority> getAuthorities(AppUser user) {
-        String role = user.getOrganization() != null ? "ROLE_ORGANIZER" : "ROLE_USER";
-        return Collections.singletonList(new SimpleGrantedAuthority(role));
-    }
 }

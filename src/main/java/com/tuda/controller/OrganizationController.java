@@ -8,10 +8,7 @@ import com.tuda.service.OrganizationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/organization")
@@ -29,6 +26,14 @@ public class OrganizationController extends EntityController<Organization> {
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<OrganizationResponseDTO>> addOrganization(@RequestBody OrganizationRequestDTO requestDTO) {
         Organization organization = organizationService.addOrganization(requestDTO);
+        OrganizationResponseDTO dto = serialize(organization, ORGANIZATION_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dto));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ApiResponse<OrganizationResponseDTO>> updateOrganization(@RequestBody OrganizationRequestDTO requestDTO,
+                                                                                   @RequestParam long organizationId) {
+        Organization organization = organizationService.updateOrganization(requestDTO, organizationId);
         OrganizationResponseDTO dto = serialize(organization, ORGANIZATION_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dto));
     }
