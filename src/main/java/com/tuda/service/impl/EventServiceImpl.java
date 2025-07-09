@@ -78,7 +78,9 @@ public class EventServiceImpl implements EventService {
             fileService.delete(event.getPhoto().getFilename());
             photoRepository.delete(event.getPhoto());
             event.setPhoto(null);
-        } else if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null) {
+        } else if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null
+                && !requestDTO.getFilename().equals(event.getPhoto().getFilename())
+                && !requestDTO.getUploadId().equals(event.getPhoto().getUploadId())) {
             fileService.delete(event.getPhoto().getFilename());
 
             Photo photo = photoRepository.findById(event.getPhoto().getId())
