@@ -25,6 +25,7 @@ public class EventConverter {
         modelMapper.typeMap(EventRequestDTO.class, Event.class)
                 .addMappings(mapper -> mapper.skip(Event::setId));
 
+
     }
 
     Converter<Event, EventResponseDTO> getConverter() {

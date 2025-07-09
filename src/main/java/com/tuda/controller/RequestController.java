@@ -4,6 +4,7 @@ import com.tuda.data.entity.Request;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.response.RequestResponseDTO;
 import com.tuda.service.RequestService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RequestMapping("/request")
 @RestController
+@SecurityRequirement(name = "JWT")
 public class RequestController extends EntityController<Request>{
     private final RequestService requestService;
 

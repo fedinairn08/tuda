@@ -7,6 +7,7 @@ import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.service.EventService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,7 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dto));
     }
 
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/getByUserId/{id}")
     public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByUserId(@PathVariable long id) {
         List<Event> events = eventService.getEventsByUserId(id);
@@ -46,6 +48,7 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<EventResponseDTO>> updateEvent(@RequestBody EventRequestDTO requestDTO, @RequestParam("id") long id) {
         Event updatedEvent = eventService.updateEvent(requestDTO, id);
@@ -53,6 +56,7 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dto));
     }
 
+    @SecurityRequirement(name = "JWT")
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<EventResponseDTO>> addEvent(@RequestBody EventRequestDTO requestDTO) {
         Event newEvent = eventService.addEvent(requestDTO);
@@ -60,12 +64,14 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dto));
     }
 
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/{id}/participants")
     public ResponseEntity<ApiResponse<List<EventParticipantResponseDTO>>> getParticipantsByEventId(@PathVariable("id") long eventId) {
         List<EventParticipantResponseDTO> participantsDTO = eventService.getAllParticipantsByEventId(eventId);
         return ResponseEntity.ok(new ApiResponse<>(participantsDTO));
     }
 
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/filterByStatusAndAppUserId")
     public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserId(@RequestParam EventStatus status, @RequestParam long appUserId) {
         List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserId(status, appUserId);
@@ -73,6 +79,7 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/getEventsByOrganizerId")
     public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getOrganizationEventsByOrganizerId(@RequestParam long organizerId) {
         List<Event> organizerEvents = eventService.getOrganizationEventsByOrganizerId(organizerId);
