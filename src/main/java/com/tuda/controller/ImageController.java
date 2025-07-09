@@ -6,11 +6,14 @@ import com.tuda.s3storage.S3File;
 import com.tuda.service.ImageService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import org.apache.commons.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/image")
@@ -37,15 +40,15 @@ public class ImageController {
         imageService.delete(filename);
     }
 
-//    @GetMapping(value = "/get/{uuid}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-//    public ResponseEntity<String> getImageByUuid(@PathVariable UUID uuid) {
-//        S3File image = imageService.getMediaFileByUuid(uuid);
-//
-//        String base64Image = Base64.encodeBase64String(image.getContent());
-//
-//        return ResponseEntity
-//                .ok()
-//                .contentType(MediaType.TEXT_PLAIN)
-//                .body(base64Image);
-//    }
+    @GetMapping(value = "/get/{uuid}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<String> getImageByUuid(@PathVariable UUID uuid) {
+        S3File image = imageService.getMediaFileByUuid(uuid);
+
+        String base64Image = Base64.encodeBase64String(image.getContent());
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(base64Image);
+    }
 }
