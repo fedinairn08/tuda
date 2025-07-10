@@ -2,6 +2,7 @@ package com.tuda.repository;
 
 import com.tuda.data.entity.AccountingAppUser;
 import com.tuda.data.entity.AppUser;
+import com.tuda.data.entity.Guest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface AccountingUserRepository extends JpaRepository<AccountingAppUse
     List<AccountingAppUser> findAllByEventId(Long eventId);
 
     Optional<AccountingAppUser> findByAppUserIdAndEventId(Long appUserId, Long eventId);
+
+    Optional<AccountingAppUser> findByKeyId(String keyId);
 }

@@ -64,6 +64,14 @@ services:
     networks:
       - backend
 
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - backend
+
   prometheus:
     image: prom/prometheus:latest
     volumes:

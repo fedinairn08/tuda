@@ -89,10 +89,18 @@ public class EventController extends EntityController<Event> {
     }
 
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/getEventsByNeededRole")
-    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRole(@RequestParam UserRole role) {
-        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRole(role);
-        List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
-        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    @PutMapping("/markPresence")
+    public ResponseEntity<ApiResponse<?>> markPresence(@RequestParam String key) {
+        return ResponseEntity.ok(new ApiResponse<>(eventService.markPresence(key)));
     }
+  
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByNeededRole")
+      public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRole(@RequestParam UserRole role) {
+          List<Event> eventsWithNeededRole = eventService.getEventsByNeededRole(role);
+          List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
+          return ResponseEntity.ok(new ApiResponse<>(dtos));
+      }
+
+
 }
