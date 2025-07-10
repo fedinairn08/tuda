@@ -150,11 +150,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId) {
+    public List<Event> getEventsByStatusAndAppUserIdForUser(EventStatus status, long appUserId) {
         if (!userRepository.existsById(appUserId)) {
             throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
         }
-        return eventRepository.findAllByStatusAndAppUserId(appUserId, status.toString());
+        return eventRepository.findAllByStatusAndAppUserIdForUser(appUserId, status.toString());
     }
 
     @Override
