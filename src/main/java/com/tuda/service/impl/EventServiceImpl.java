@@ -3,6 +3,7 @@ package com.tuda.service.impl;
 import com.tuda.data.entity.*;
 import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.ParticipantType;
+import com.tuda.data.enums.UserRole;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.exception.NotFoundException;
@@ -161,4 +162,14 @@ public class EventServiceImpl implements EventService {
         }
         return eventRepository.findAllOrganizationEventsByOrganizerId(organizerId);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> getEventsByNeededRole(UserRole role) {
+        if (role == UserRole.PARTICIPANT) {
+            return eventRepository.findAllByNeededParticipant(UserRole.PARTICIPANT.ordinal());
+        }
+        return eventRepository.findAllByNeededVolunteers(UserRole.VOLUNTEER.ordinal());
+    }
+
 }

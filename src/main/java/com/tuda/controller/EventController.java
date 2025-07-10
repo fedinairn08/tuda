@@ -2,6 +2,7 @@ package com.tuda.controller;
 
 import com.tuda.data.entity.*;
 import com.tuda.data.enums.EventStatus;
+import com.tuda.data.enums.UserRole;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
@@ -87,4 +88,11 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByNeededRole")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRole(@RequestParam UserRole role) {
+        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRole(role);
+        List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
 }

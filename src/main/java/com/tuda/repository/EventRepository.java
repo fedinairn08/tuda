@@ -16,4 +16,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = "SELECT e.* FROM events e JOIN organizations o ON e.organization_id = o.id JOIN app_users ap ON o.id = ap.organization_id WHERE ap.id = :organizerId", nativeQuery = true)
     List<Event> findAllOrganizationEventsByOrganizerId(@Param("organizerId") long organizerId);
+
+    @Query(value = "SELECT e.* FROM events e JOIN (SELECT ac.event_id, COUNT(ac.id) as participant_count FROM accounting_app_users ac WHERE ac.user_role = :userRole GROUP BY ac.event_id) acc ON e.id = acc.event_id WHERE e.participants_number > acc.participant_count", nativeQuery = true)
+    List<Event> findAllByNeededParticipant(@Param("userRole") long userRole);
+
+    @Query(value = "SELECT e.* FROM events e JOIN (SELECT ac.event_id, COUNT(ac.id) as volunteer_count FROM accounting_app_users ac WHERE ac.user_role = :userRole GROUP BY ac.event_id) acc ON e.id = acc.event_id WHERE e.volunteers_number > acc.volunteer_count", nativeQuery = true)
+    List<Event> findAllByNeededVolunteers(@Param("userRole") long userRole);
 }
