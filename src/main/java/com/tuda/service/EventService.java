@@ -16,7 +16,7 @@ public interface EventService {
     Event updateEvent(EventRequestDTO requestDTO, long id);
     Event addEvent(EventRequestDTO requestDTO);
     List<EventParticipantResponseDTO> getAllParticipantsByEventId(long id);
-    List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId);
+    List<Event> getEventsByStatusAndAppUserIdForUser(EventStatus status, long appUserId);
     List<Event> getOrganizationEventsByOrganizerId(long organizerId);
     Optional<?> markPresence(String key);
     List<Event> getEventsByNeededRole(UserRole role);
