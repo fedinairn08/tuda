@@ -10,6 +10,7 @@ import com.tuda.exception.NotFoundException;
 import com.tuda.repository.EventRepository;
 import com.tuda.repository.GuestRepository;
 import com.tuda.service.GuestService;
+import com.tuda.service.KeyService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,14 @@ public class GuestServiceImpl implements GuestService {
     private GuestRepository guestRepository;
     private final ModelMapper modelMapper;
     private final EmailServiceImpl emailService;
+    private final KeyService keyService;
 
     @Override
     @Transactional
     public Guest addGuest(GuestRequestDTO guestRequestDTO) {
         try {
             Guest guest = modelMapper.map(guestRequestDTO, Guest.class);
-            String participationCode = UUID.randomUUID().toString();
+            String participationCode = keyService.generateKey();
             guest.setKeyId(participationCode);
             emailService.sendQrEmail(guest.getMail(), "QR-код для участия на мероприятии " + guest.getEvent().getTitle(), "Участвует " + guest.getFullName(), participationCode);
 

@@ -49,7 +49,7 @@ public class AccountingUserServiceImpl implements AccountingUserService {
                 .keyId(participationCode)
                 .build();
 
-        emailService.sendQrEmail(login, participationCode, event.getTitle(), user.getFullName());
+        emailService.sendQrEmail(login, "QR-код для участия на мероприятии " + event.getTitle(), "Участвует " + user.getFullName(), participationCode);
 
         return accountingUserRepository.save(accounting);
     }
@@ -71,7 +71,7 @@ public class AccountingUserServiceImpl implements AccountingUserService {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with id: %s -- is not found", eventId)));
 
-        String participationCode = UUID.randomUUID().toString();
+        String participationCode = keyService.generateKey();
 
         AccountingAppUser accounting = AccountingAppUser.builder()
                 .appUser(user)
