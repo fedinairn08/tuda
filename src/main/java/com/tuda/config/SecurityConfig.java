@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 "/event/getById/**",
                                 "/guest/add",
                                 "/image/get/**",
+                                "/send-test-email",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",

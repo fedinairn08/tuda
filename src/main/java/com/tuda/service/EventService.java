@@ -6,6 +6,7 @@ import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EventService {
     List<Event> getAllEvents();
@@ -16,4 +17,5 @@ public interface EventService {
     List<EventParticipantResponseDTO> getAllParticipantsByEventId(long id);
     List<Event> getEventsByStatusAndAppUserId(EventStatus status, long appUserId);
     List<Event> getOrganizationEventsByOrganizerId(long organizerId);
+    Optional<?> markPresence(String key);
 }
