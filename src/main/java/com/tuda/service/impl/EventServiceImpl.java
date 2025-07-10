@@ -7,8 +7,7 @@ import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.*;
-import com.tuda.service.EventService;
-import com.tuda.service.RequestService;
+import com.tuda.service.*;
 import com.tuda.service.file.FileService;
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +29,13 @@ public class EventServiceImpl implements EventService {
     private final ModelMapper modelMapper;
     private final PhotoRepository photoRepository;
     private final FileService fileService;
+    private final KeyService keyService;
     private final Counter eventCounter;
     private final GuestRepository guestRepository;
     private final OrganizationRepository organizationRepository;
     private final AccountingUserRepository accountingUserRepository;
+    private final GuestService guestService;
+    private final AccountingUserService accountingUserService;
 
     @Override
     @Transactional(readOnly = true)
@@ -149,4 +152,20 @@ public class EventServiceImpl implements EventService {
     public List<Event> getOrganizationEventsByOrganizerId(long organizerId) {
         return eventRepository.findAllOrganizationEventsByOrganizerId(organizerId);
     }
+
+    @Override
+    public Optional<?> markPresence(String key) {
+        return keyService.findEntityByKey(key).map(person -> {
+            if (person instanceof Guest guest) {
+                return guestService.markPresence(guest.getId());
+            } else if (person instanceof AccountingAppUser user) {
+                return accountingUserService.markPresence(
+                        user.getEvent().getId(),
+                        user.getAppUser().getLogin()
+                );
+            }
+            throw new NotFoundException("Ключ не найден");
+        });
+    }
+
 }

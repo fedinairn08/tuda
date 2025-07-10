@@ -87,4 +87,10 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
+    @PutMapping("/markPresence")
+    public ResponseEntity<ApiResponse<?>> markPresence(@RequestParam String key) {
+        return ResponseEntity.ok(new ApiResponse<>(eventService.markPresence(key)));
+    }
+
 }
