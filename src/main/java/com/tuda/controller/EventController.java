@@ -102,4 +102,12 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/filterByStatusAndAppUserIdForOrganizer")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserIdForOrganizer(@RequestParam EventStatus status, @RequestParam long appUserId) {
+        List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserIdForOrganizer(status, appUserId);
+        List<EventResponseDTO> dtos = serialize(filteredEvents, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
 }

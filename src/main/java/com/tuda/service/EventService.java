@@ -20,4 +20,5 @@ public interface EventService {
     List<Event> getOrganizationEventsByOrganizerId(long organizerId);
     Optional<?> markPresence(String key);
     List<Event> getEventsByNeededRole(UserRole role);
+    List<Event> getEventsByStatusAndAppUserIdForOrganizer(EventStatus status, long appUserId);
 }
