@@ -95,9 +95,9 @@ public class EventController extends EntityController<Event> {
     }
 
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/getEventsByNeededRole")
-    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRole(@RequestParam UserRole role) {
-        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRole(role);
+    @GetMapping("/getEventsByNeededRoleForUser")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRoleForUser(@RequestParam UserRole role) {
+        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRoleForUser(role);
         List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
@@ -107,6 +107,14 @@ public class EventController extends EntityController<Event> {
     public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserIdForOrganizer(@RequestParam EventStatus status, @RequestParam long appUserId) {
         List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserIdForOrganizer(status, appUserId);
         List<EventResponseDTO> dtos = serialize(filteredEvents, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByNeededRoleForOrganizer")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRoleForOrganizer(@RequestParam UserRole role,  @RequestParam long appUserId) {
+        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRoleForOrganizer(role, appUserId);
+        List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
