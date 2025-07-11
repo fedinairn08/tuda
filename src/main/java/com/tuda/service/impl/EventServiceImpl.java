@@ -190,4 +190,11 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAllByNeededVolunteers(UserRole.VOLUNTEER.ordinal());
     }
 
+    public List<Event> getEventsByStatusAndAppUserIdForOrganizer(EventStatus status, long appUserId) {
+        if (!userRepository.existsById(appUserId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
+        }
+        return eventRepository.findAllByStatusAndAppUserIdForOrganizer(appUserId, status.toString());
+    }
+
 }
