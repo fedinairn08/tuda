@@ -19,6 +19,7 @@ public interface EventService {
     List<Event> getEventsByStatusAndAppUserIdForUser(EventStatus status, long appUserId);
     List<Event> getOrganizationEventsByOrganizerId(long organizerId);
     Optional<?> markPresence(String key);
-    List<Event> getEventsByNeededRole(UserRole role);
+    List<Event> getEventsByNeededRoleForUser(UserRole role);
     List<Event> getEventsByStatusAndAppUserIdForOrganizer(EventStatus status, long appUserId);
+    List<Event> getEventsByNeededRoleForOrganizer(UserRole role, long appUserId);
 }
