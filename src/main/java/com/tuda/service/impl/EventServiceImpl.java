@@ -3,6 +3,7 @@ package com.tuda.service.impl;
 import com.tuda.data.entity.*;
 import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.ParticipantType;
+import com.tuda.data.enums.UserRole;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.exception.NotFoundException;
@@ -140,7 +141,7 @@ public class EventServiceImpl implements EventService {
         }
         for (Guest guest : guests) {
             EventParticipantResponseDTO participant = new EventParticipantResponseDTO(guest.getId(),
-                    guest.getFullName(), guest.isStatus(), null, ParticipantType.GUEST);
+                    guest.getFullName(), guest.isStatus(), UserRole.PARTICIPANT, ParticipantType.GUEST);
             participants.add(participant);
         }
 
