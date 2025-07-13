@@ -1,6 +1,7 @@
 package com.tuda.service.impl;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -63,46 +64,55 @@ public class ReportServiceImpl implements ReportService {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Document document = new Document();
             PdfWriter.getInstance(document, out);
+
+            // Регистрация шрифта с поддержкой кириллицы
+            BaseFont bf = BaseFont.createFont(
+                    "fonts/times-new-roman.ttf",
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED
+            );
+            Font titleFont = new Font(bf, 16, Font.BOLD);
+            Font headerFont = new Font(bf, 12, Font.BOLD);
+            Font cellFont = new Font(bf, 10);
+
             document.open();
 
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10);
-            Paragraph title = new Paragraph("Отчет о присутствующих", titleFont);
+            // Заголовок
+            Paragraph title = new Paragraph("Отчет о присутствующих на мероприятии", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(20f);
             document.add(title);
 
-            PdfPTable table = new PdfPTable(3);
+            // Таблица с данными
+            PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
-            table.setWidths(new float[]{3, 3, 3, 3});  // Ширина колонок
+            table.setWidths(new float[]{3, 2, 2, 2});
 
-            String[] headers = {"FullName", "Присутствие", "Роль", "Тип"};
+            // Заголовки таблицы
+            String[] headers = {"ФИО", "Присутствие", "Роль", "Тип"};
             for (String header : headers) {
-                PdfPCell cell = new PdfPCell(new Paragraph(header, FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+                PdfPCell cell = new PdfPCell(new Paragraph(header, headerFont));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setPadding(5f);
                 table.addCell(cell);
             }
 
+            // Данные участников
             for (EventParticipantResponseDTO participant : participants) {
-                addTableRow(table, participant.getFullName());
-                addTableRow(table, participant.getStatus() ? "Пришёл" : "Пропустил");
-                addTableRow(table,  participant.getRole().equals(UserRole.PARTICIPANT) ? "Участник" : "Волонтёр");
-                addTableRow(table, participant.getType().equals(ParticipantType.GUEST) ? "Гость" : "Пользователь");
+                table.addCell(new Paragraph(participant.getFullName(), cellFont));
+                table.addCell(new Paragraph(participant.getStatus() ? "Присутствовал" : "Отсутствовал", cellFont));
+                table.addCell(new Paragraph(participant.getRole().equals(UserRole.PARTICIPANT) ? "Участник" : "Волонтер", cellFont));
+                table.addCell(new Paragraph(participant.getType().equals(ParticipantType.GUEST) ? "Гость" : "Пользователь", cellFont));
             }
 
             document.add(table);
             document.close();
-
             return out.toByteArray();
         } catch (DocumentException | IOException e) {
             throw new RuntimeException("Ошибка при генерации PDF", e);
         }
     }
 
-    private void addTableRow(PdfPTable table, String text) {
-        PdfPCell cell = new PdfPCell();
-        cell.setPhrase(new Paragraph(text));
-        table.addCell(cell);
-    }
+
 
 }

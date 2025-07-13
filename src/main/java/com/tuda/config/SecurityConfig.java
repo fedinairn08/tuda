@@ -54,8 +54,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
-                                "/webjars/**",
-                                "/pdf/download"
+                                "/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

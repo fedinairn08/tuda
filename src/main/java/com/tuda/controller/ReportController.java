@@ -2,6 +2,7 @@ package com.tuda.controller;
 
 import com.tuda.data.entity.Event;
 import com.tuda.dto.ApiResponse;
+import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.service.EventService;
 import com.tuda.service.ReportService;
@@ -29,12 +30,13 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@SecurityRequirement(name = "JWT")
 @RequestMapping("/report")
 public class ReportController {
     private final Clock clock;
     private final ReportService reportService;
+    private final EventService eventService;
 
-    @SecurityRequirement(name = "JWT")
     @GetMapping("/cvs/download")
     public ResponseEntity<Resource> getCvsReport(@RequestParam Long eventId) throws IOException {
         String timestamp = LocalDateTime.now(clock).format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
@@ -55,9 +57,16 @@ public class ReportController {
         byte[] pdfBytes = reportService.generatePdfReport(eventId);
         ByteArrayResource resource = new ByteArrayResource(pdfBytes);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=participants_report.pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=event_participants_report.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .contentLength(pdfBytes.length)
                 .body(resource);
+//        byte[] pdfBytes = reportService.generatePdfReport(eventId);
+//        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=participants_report.pdf")
+//                .contentType(MediaType.APPLICATION_PDF)
+//                .contentLength(pdfBytes.length)
+//                .body(resource);
     }
 }

@@ -12,6 +12,7 @@ FROM eclipse-temurin:17-jre-focal
 WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
+COPY src/main/resources /app/resources
 
 EXPOSE 8080
 
