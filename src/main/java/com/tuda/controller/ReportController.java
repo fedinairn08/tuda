@@ -7,6 +7,7 @@ import com.tuda.service.EventService;
 import com.tuda.service.ReportService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,11 +30,11 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/report")
-@SecurityRequirement(name = "JWT")
 public class ReportController {
     private final Clock clock;
     private final ReportService reportService;
 
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/cvs/download")
     public ResponseEntity<Resource> getCvsReport(@RequestParam Long eventId) throws IOException {
         String timestamp = LocalDateTime.now(clock).format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
@@ -46,6 +47,17 @@ public class ReportController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentLength(Files.size(reportFile.toPath()))
                 .contentType(MediaType.parseMediaType("text/csv"))
+                .body(resource);
+    }
+
+    @GetMapping("/pdf/download")
+    public ResponseEntity<Resource> getPdfReport(@RequestParam Long eventId) {
+        byte[] pdfBytes = reportService.generatePdfReport(eventId);
+        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=participants_report.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(pdfBytes.length)
                 .body(resource);
     }
 }
