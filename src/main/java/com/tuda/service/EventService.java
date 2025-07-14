@@ -22,4 +22,5 @@ public interface EventService {
     List<Event> getEventsByNeededRoleForUser(UserRole role);
     List<Event> getEventsByStatusAndAppUserIdForOrganizer(EventStatus status, long appUserId);
     List<Event> getEventsByNeededRoleForOrganizer(UserRole role, long appUserId);
+    Long getUserCountWithCertainRoleOnEvent(UserRole role, long eventId);
 }

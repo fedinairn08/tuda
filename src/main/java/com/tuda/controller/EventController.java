@@ -118,4 +118,12 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getUserCountWithCertainRoleOnEvent")
+    public ResponseEntity<ApiResponse<Long>>  getUserCountWithCertainRoleOnEvent(@RequestParam UserRole role,
+                                                                  @RequestParam long eventId) {
+        Long participantCount = eventService.getUserCountWithCertainRoleOnEvent(role, eventId);
+        return ResponseEntity.ok(new ApiResponse<>(participantCount));
+    }
+
 }
