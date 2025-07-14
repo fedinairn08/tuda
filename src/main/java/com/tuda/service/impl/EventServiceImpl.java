@@ -184,12 +184,35 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<Event> getEventsByNeededRoleForUser(UserRole role) {
-        if (role == UserRole.PARTICIPANT) {
-            return eventRepository.findAllByNeededParticipantForUser(UserRole.PARTICIPANT.ordinal());
+        List<Event> events = eventRepository.findAll();
+        List<Event> eventsWithNeededRole = new ArrayList<>();
+        for (Event event : events) {
+            if (event.getEventStatus() != EventStatus.WILL) {
+                continue;
+            }
+
+            addEventIfRolesRequired(role, eventsWithNeededRole, event);
         }
-        return eventRepository.findAllByNeededVolunteersForUser(UserRole.VOLUNTEER.ordinal());
+        return eventsWithNeededRole;
+
     }
 
+    private void addEventIfRolesRequired(UserRole role, List<Event> eventsWithNeededRole, Event event) {
+        long totalCount =
+                eventRepository.findUserCountByCertainRoleAndEventId(role.ordinal(), event.getId()).orElse(0L);
+        if (role == UserRole.PARTICIPANT) {
+            totalCount += guestRepository.findGuestCountByEventId(event.getId()).orElse(0L);
+        }
+
+        if (role == UserRole.PARTICIPANT && totalCount < event.getParticipantsNumber()) {
+            eventsWithNeededRole.add(event);
+        } else if (role == UserRole.VOLUNTEER && totalCount < event.getVolunteersNumber()) {
+            eventsWithNeededRole.add(event);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Event> getEventsByStatusAndAppUserIdForOrganizer(EventStatus status, long appUserId) {
         if (!userRepository.existsById(appUserId)) {
             throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
@@ -197,18 +220,23 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAllByStatusAndAppUserIdForOrganizer(appUserId, status.toString());
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<Event>  getEventsByNeededRoleForOrganizer(UserRole role, long appUserId) {
         if (!userRepository.existsById(appUserId)) {
             throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
         }
 
-        if (role == UserRole.PARTICIPANT) {
-            return eventRepository.findAllByNeededParticipantForOrganizer(appUserId, UserRole.PARTICIPANT.ordinal());
+        List<Event> events = eventRepository.findAllOrganizationEventsByOrganizerId(appUserId);
+        List<Event> eventsWithNeededRole = new ArrayList<>();
+        for (Event event : events) {
+            addEventIfRolesRequired(role, eventsWithNeededRole, event);
         }
-        return eventRepository.findAllByNeededVolunteersForOrganizer(appUserId, UserRole.VOLUNTEER.ordinal());
-
+        return eventsWithNeededRole;
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public Long getUserCountWithCertainRoleOnEvent(UserRole role, long eventId) {
         if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException(String.format("Event with id: %s -- is not found", eventId));
@@ -224,6 +252,8 @@ public class EventServiceImpl implements EventService {
         return totalCount;
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public AppUser getContactPersonOfEvent(long eventId) {
         return eventRepository.findContactPersonByEventId(eventId).orElseThrow(
                 () -> new NotFoundException(String.format("Event with id: %s -- is not found", eventId)));
