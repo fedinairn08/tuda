@@ -32,7 +32,7 @@ public class ReportServiceImpl implements ReportService {
                 .withLineEnd(CSVWriter.DEFAULT_LINE_END)
                 .build()) {
 
-            String[] header = {"FullName", "Присутствие", "Роль", "Тип"};
+            String[] header = {"ФИО", "Присутствие", "Роль", "Тип"};
             writer.writeNext(header);
 
             for (EventParticipantResponseDTO participant: participants) {
