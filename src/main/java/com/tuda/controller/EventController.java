@@ -2,8 +2,10 @@ package com.tuda.controller;
 
 import com.tuda.data.entity.*;
 import com.tuda.data.enums.EventStatus;
+import com.tuda.data.enums.UserRole;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.EventRequestDTO;
+import com.tuda.dto.response.AppUserResponseDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.service.EventService;
@@ -20,6 +22,7 @@ public class EventController extends EntityController<Event> {
     private final EventService eventService;
 
     private static final Class<EventResponseDTO> EVENT_RESPONSE_DTO_CLASS = EventResponseDTO.class;
+    private static final Class<AppUserResponseDTO> APP_USER_RESPONSE_DTO_CLASS = AppUserResponseDTO.class;
 
     public EventController(ModelMapper modelMapper, EventService eventService) {
         super(modelMapper);
@@ -72,9 +75,9 @@ public class EventController extends EntityController<Event> {
     }
 
     @SecurityRequirement(name = "JWT")
-    @GetMapping("/filterByStatusAndAppUserId")
-    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserId(@RequestParam EventStatus status, @RequestParam long appUserId) {
-        List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserId(status, appUserId);
+    @GetMapping("/filterByStatusAndAppUserIdForUser")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserIdForUser(@RequestParam EventStatus status, @RequestParam long appUserId) {
+        List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserIdForUser(status, appUserId);
         List<EventResponseDTO> dtos = serialize(filteredEvents, EVENT_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
@@ -93,4 +96,43 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(eventService.markPresence(key)));
     }
 
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByNeededRoleForUser")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRoleForUser(@RequestParam UserRole role) {
+        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRoleForUser(role);
+        List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/filterByStatusAndAppUserIdForOrganizer")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByStatusAndAppUserIdForOrganizer(@RequestParam EventStatus status, @RequestParam long appUserId) {
+        List<Event> filteredEvents = eventService.getEventsByStatusAndAppUserIdForOrganizer(status, appUserId);
+        List<EventResponseDTO> dtos = serialize(filteredEvents, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByNeededRoleForOrganizer")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByNeededRoleForOrganizer(@RequestParam UserRole role,  @RequestParam long appUserId) {
+        List<Event> eventsWithNeededRole = eventService.getEventsByNeededRoleForOrganizer(role, appUserId);
+        List<EventResponseDTO> dtos = serialize(eventsWithNeededRole, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getUserCountWithCertainRoleOnEvent")
+    public ResponseEntity<ApiResponse<Long>>  getUserCountWithCertainRoleOnEvent(@RequestParam UserRole role,
+                                                                  @RequestParam long eventId) {
+        Long participantCount = eventService.getUserCountWithCertainRoleOnEvent(role, eventId);
+        return ResponseEntity.ok(new ApiResponse<>(participantCount));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getContactPersonOfEvent")
+    public ResponseEntity<ApiResponse<AppUserResponseDTO>>  getContactPersonOfEvent(@RequestParam long eventId) {
+        AppUser contactPerson = eventService.getContactPersonOfEvent(eventId);
+        AppUserResponseDTO dto = modelMapper.map(contactPerson, APP_USER_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dto));
+    }
 }
