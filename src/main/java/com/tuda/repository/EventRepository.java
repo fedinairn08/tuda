@@ -1,5 +1,6 @@
 package com.tuda.repository;
 
+import com.tuda.data.entity.AppUser;
 import com.tuda.data.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,5 +35,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByNeededVolunteersForOrganizer(@Param("appUserId") long appUserId, @Param("userRole") long userRole);
 
     @Query(value = "SELECT COUNT(acc.id) as user_count FROM accounting_app_users acc WHERE acc.user_role = :userRole AND acc.event_id = :eventId GROUP BY acc.event_id\n", nativeQuery = true)
-    Optional<Long> findUserCountWithCertainRoleOnEvent(@Param("userRole") long userRole, @Param("eventId")  long eventId);
+    Optional<Long> findUserCountByCertainRoleAndEventId(@Param("userRole") long userRole, @Param("eventId")  long eventId);
+
+    @Query(value = "SELECT app.* FROM events e JOIN organizations o ON e.organization_id = o.id JOIN app_users app ON o.id = app.organization_id WHERE e.id = :eventId", nativeQuery = true)
+    Optional<AppUser> findContactPersonByEventId(long eventId);
 }

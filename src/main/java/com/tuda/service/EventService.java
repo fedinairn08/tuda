@@ -1,5 +1,6 @@
 package com.tuda.service;
 
+import com.tuda.data.entity.AppUser;
 import com.tuda.data.entity.Event;
 import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.UserRole;
@@ -23,4 +24,5 @@ public interface EventService {
     List<Event> getEventsByStatusAndAppUserIdForOrganizer(EventStatus status, long appUserId);
     List<Event> getEventsByNeededRoleForOrganizer(UserRole role, long appUserId);
     Long getUserCountWithCertainRoleOnEvent(UserRole role, long eventId);
+    AppUser getContactPersonOfEvent(long eventId);
 }
