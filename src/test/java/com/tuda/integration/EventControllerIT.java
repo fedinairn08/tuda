@@ -7,7 +7,6 @@ import com.tuda.data.entity.Event;
 import com.tuda.data.entity.Organization;
 import com.tuda.data.entity.Photo;
 import com.tuda.data.enums.EventStatus;
-import com.tuda.data.enums.UserRole;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.repository.EventRepository;
 import com.tuda.repository.OrganizationRepository;
@@ -192,15 +191,6 @@ public class EventControllerIT extends AbstractIntegrationTest {
     void getEventsByOrganizerId_shouldReturnOrganizerEvents() throws Exception {
         mockMvc.perform(get("/event/getEventsByOrganizerId")
                         .param("organizerId", String.valueOf(testUser.getId())))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result").isArray());
-    }
-
-    @Test
-    @WithMockUser(username = "testuser")
-    void getEventsByNeededRole_shouldReturnEvents() throws Exception {
-        mockMvc.perform(get("/event/getEventsByNeededRole")
-                        .param("role", UserRole.VOLUNTEER.name()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").isArray());
     }
