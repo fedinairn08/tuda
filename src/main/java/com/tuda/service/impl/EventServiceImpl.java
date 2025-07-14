@@ -209,4 +209,16 @@ public class EventServiceImpl implements EventService {
 
     }
 
+    public Long getUserCountWithCertainRoleOnEvent(UserRole role, long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotFoundException(String.format("Event with id: %s -- is not found", eventId));
+        }
+        Optional<Long> countOptional = eventRepository.findUserCountByCertainRoleAndEventId(role.ordinal(), eventId);
+        return countOptional.orElse(0L);
+    }
+
+    public AppUser getContactPersonOfEvent(long eventId) {
+        return eventRepository.findContactPersonByEventId(eventId).orElseThrow(
+                () -> new NotFoundException(String.format("Event with id: %s -- is not found", eventId)));
+    }
 }

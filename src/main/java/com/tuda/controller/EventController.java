@@ -5,6 +5,7 @@ import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.UserRole;
 import com.tuda.dto.ApiResponse;
 import com.tuda.dto.request.EventRequestDTO;
+import com.tuda.dto.response.AppUserResponseDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.EventParticipantResponseDTO;
 import com.tuda.service.EventService;
@@ -21,6 +22,7 @@ public class EventController extends EntityController<Event> {
     private final EventService eventService;
 
     private static final Class<EventResponseDTO> EVENT_RESPONSE_DTO_CLASS = EventResponseDTO.class;
+    private static final Class<AppUserResponseDTO> APP_USER_RESPONSE_DTO_CLASS = AppUserResponseDTO.class;
 
     public EventController(ModelMapper modelMapper, EventService eventService) {
         super(modelMapper);
@@ -118,4 +120,19 @@ public class EventController extends EntityController<Event> {
         return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getUserCountWithCertainRoleOnEvent")
+    public ResponseEntity<ApiResponse<Long>>  getUserCountWithCertainRoleOnEvent(@RequestParam UserRole role,
+                                                                  @RequestParam long eventId) {
+        Long participantCount = eventService.getUserCountWithCertainRoleOnEvent(role, eventId);
+        return ResponseEntity.ok(new ApiResponse<>(participantCount));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getContactPersonOfEvent")
+    public ResponseEntity<ApiResponse<AppUserResponseDTO>>  getContactPersonOfEvent(@RequestParam long eventId) {
+        AppUser contactPerson = eventService.getContactPersonOfEvent(eventId);
+        AppUserResponseDTO dto = modelMapper.map(contactPerson, APP_USER_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dto));
+    }
 }
