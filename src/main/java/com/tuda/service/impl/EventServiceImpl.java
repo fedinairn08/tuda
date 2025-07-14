@@ -141,7 +141,7 @@ public class EventServiceImpl implements EventService {
         }
         for (Guest guest : guests) {
             EventParticipantResponseDTO participant = new EventParticipantResponseDTO(guest.getId(),
-                    guest.getFullName(), guest.isStatus(), null, ParticipantType.GUEST);
+                    guest.getFullName(), guest.isStatus(), UserRole.PARTICIPANT, ParticipantType.GUEST);
             participants.add(participant);
         }
 

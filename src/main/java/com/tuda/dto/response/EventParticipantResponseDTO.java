@@ -13,7 +13,7 @@ public class EventParticipantResponseDTO {
 
     private String fullName;
 
-    private boolean status;
+    private Boolean status;
 
     private UserRole role;
 
