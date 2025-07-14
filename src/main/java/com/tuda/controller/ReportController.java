@@ -50,25 +50,6 @@ public class ReportController {
                 .body(resource);
     }
 
-    @Operation(
-            summary = "Download PDF report",
-            description = "Generates and downloads a PDF report for the specified event",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "PDF report file",
-                            content = @Content(
-                                    mediaType = "application/pdf",
-                                    schema = @Schema(type = "string", format = "binary") // Важно: указываем binary!
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Event not found",
-                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
-                    )
-            }
-    )
     @GetMapping("/pdf/download")
     public ResponseEntity<Resource> getPdfReport(@RequestParam Long eventId) {
         byte[] pdfBytes = reportService.generatePdfReport(eventId);
