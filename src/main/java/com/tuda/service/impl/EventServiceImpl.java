@@ -213,8 +213,15 @@ public class EventServiceImpl implements EventService {
         if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException(String.format("Event with id: %s -- is not found", eventId));
         }
-        Optional<Long> countOptional = eventRepository.findUserCountByCertainRoleAndEventId(role.ordinal(), eventId);
-        return countOptional.orElse(0L);
+        Optional<Long> autorizedUserCountOptional = eventRepository.findUserCountByCertainRoleAndEventId(role.ordinal(), eventId);
+        long totalCount = autorizedUserCountOptional.orElse(0L);
+
+        if (role == UserRole.PARTICIPANT) {
+            Optional<Long> guestCountOptional = guestRepository.findGuestCountByEventId(eventId);
+            totalCount += guestCountOptional.orElse(0L);
+        }
+
+        return totalCount;
     }
 
     public AppUser getContactPersonOfEvent(long eventId) {
