@@ -1,6 +1,7 @@
 package com.tuda.service.impl;
 
 import com.tuda.data.entity.*;
+import com.tuda.data.enums.AttendanceUserStatus;
 import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.ParticipantType;
 import com.tuda.data.enums.UserRole;
@@ -258,4 +259,25 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findContactPersonByEventId(eventId).orElseThrow(
                 () -> new NotFoundException(String.format("Event with id: %s -- is not found", eventId)));
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> getEventsByAppUserIdAndAttendanceStatus(long appUserId, AttendanceUserStatus status) {
+        if (!userRepository.existsById(appUserId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
+        }
+
+        return eventRepository.findAllByAppUserIdAndAttendanceStatus(appUserId, status == AttendanceUserStatus.PRESENTED);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> getEventsByAppUserIdAndRole(long appUserId, UserRole role) {
+        if (!userRepository.existsById(appUserId)) {
+            throw new NotFoundException(String.format("User with id: %s -- is not found", appUserId));
+        }
+
+        return eventRepository.findAllByAppUserIdAndRole(appUserId, role.ordinal());
+    }
+
 }
