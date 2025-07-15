@@ -27,4 +27,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = "SELECT app.* FROM events e JOIN organizations o ON e.organization_id = o.id JOIN app_users app ON o.id = app.organization_id WHERE e.id = :eventId", nativeQuery = true)
     Optional<AppUser> findContactPersonByEventId(long eventId);
+
+    @Query(value = "SELECT e.* FROM events e JOIN accounting_app_users acc ON e.id = acc.event_id WHERE acc.app_user_id = :appUserId AND acc.status = :status", nativeQuery = true)
+    List<Event> findAllByAppUserIdAndAttendanceStatus(@Param("appUserId") long appUserId, @Param("status") boolean status);
+
+    @Query(value = "SELECT e.* FROM events e JOIN accounting_app_users acc ON e.id = acc.event_id WHERE acc.app_user_id = :appUserId AND acc.user_role = :role", nativeQuery = true)
+    List<Event> findAllByAppUserIdAndRole(long appUserId, long role);
 }

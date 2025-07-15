@@ -1,6 +1,7 @@
 package com.tuda.controller;
 
 import com.tuda.data.entity.*;
+import com.tuda.data.enums.AttendanceUserStatus;
 import com.tuda.data.enums.EventStatus;
 import com.tuda.data.enums.UserRole;
 import com.tuda.dto.ApiResponse;
@@ -134,5 +135,23 @@ public class EventController extends EntityController<Event> {
         AppUser contactPerson = eventService.getContactPersonOfEvent(eventId);
         AppUserResponseDTO dto = modelMapper.map(contactPerson, APP_USER_RESPONSE_DTO_CLASS);
         return ResponseEntity.ok(new ApiResponse<>(dto));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByAppUserIdAndAttendanceStatus")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByAppUserIdAndAttendanceStatus(@RequestParam long appUserId,
+                                                                                                       @RequestParam AttendanceUserStatus status) {
+        List<Event> events = eventService.getEventsByAppUserIdAndAttendanceStatus(appUserId, status);
+        List<EventResponseDTO> dtos = serialize(events, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/getEventsByAppUserIdAndRole")
+    public ResponseEntity<ApiResponse<List<EventResponseDTO>>> getEventsByAppUserIdAndRole(@RequestParam long appUserId,
+                                                                                           @RequestParam UserRole role) {
+        List<Event> events = eventService.getEventsByAppUserIdAndRole(appUserId, role);
+        List<EventResponseDTO> dtos = serialize(events, EVENT_RESPONSE_DTO_CLASS);
+        return ResponseEntity.ok(new ApiResponse<>(dtos));
     }
 }
