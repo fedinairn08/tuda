@@ -49,6 +49,8 @@ public class SecurityConfig {
                                 "/event/getById/**",
                                 "/guest/add",
                                 "/image/get/**",
+                                "event/getUserCountWithCertainRoleOnEvent",
+                                "event/getContactPersonOfEvent",
                                 "/send-test-email",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
