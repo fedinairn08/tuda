@@ -20,11 +20,6 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
             .register(prometheusMeterRegistry);
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-    }
-
     @Bean
     public Clock clock() {
         return Clock.systemDefaultZone();
