@@ -54,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
             try {
                 mailSender.send(message);
             } catch (MailException e) {
-                throw new EmailException("Ошибка при отправке email");
+                throw new EmailException("Ошибка при отправке email " + e);
             }
 
         } catch (MessagingException e) {
