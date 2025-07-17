@@ -26,8 +26,10 @@ public class SecurityBeansConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
                 "http://82.202.130.4:5173",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "https://www.tuda-event.ru"
         ));
+
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
