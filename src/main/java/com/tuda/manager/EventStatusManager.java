@@ -32,9 +32,9 @@ public class EventStatusManager {
     @Transactional
     public void updateExpiredEvents() {
         LocalDateTime now = LocalDateTime.now();
-        var events = eventRepository.findAllByDateBeforeAndEventStatusNot(
+        var events = eventRepository.findAllByDateBeforeAndEventStatus(
                 now,
-                EventStatus.PASSED.toString()
+                EventStatus.WILL
         );
 
         events.forEach(event -> event.setEventStatus(EventStatus.PASSED));
@@ -43,5 +43,9 @@ public class EventStatusManager {
         events.forEach(event ->
                 System.out.println("Updated event status to PASSED: " + event.getId())
         );
+
+        if (events.isEmpty()) {
+            System.out.println("0!!!!");
+        }
     }
 }
