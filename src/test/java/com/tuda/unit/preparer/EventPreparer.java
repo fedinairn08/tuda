@@ -35,13 +35,13 @@ public class EventPreparer {
     }
 
 
-    public static EventResponseDTO getTestEventResponseDTO(Event testEvent, Photo testPhoto) {
+    public static EventResponseDTO getTestEventResponseDTO(Event testEvent) {
         OrganizationResponseDTO organizationResponseDTO = OrganizationResponseDTO.builder()
                 .id(1L)
                 .name("Ventum")
                 .phoneNumber("+79156745656").build();
         PhotoResponseDTO photoResponseDTO = PhotoResponseDTO.builder()
-                .uploadId(testPhoto.getUploadId())
+                .uploadId(testEvent.getPhoto().getUploadId())
                 .filename("funFest.png").build();
         return EventResponseDTO.builder()
                 .id(1L)

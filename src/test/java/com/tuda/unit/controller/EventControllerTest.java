@@ -5,6 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tuda.controller.EventController;
 import com.tuda.data.entity.Event;
 import com.tuda.dto.response.EventResponseDTO;
+import com.tuda.exception.GlobalExceptionHandler;
+import com.tuda.exception.NotFoundException;
 import com.tuda.service.EventService;
 import com.tuda.unit.preparer.EventPreparer;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,16 +52,31 @@ public class EventControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler();
+
         mockMvc = MockMvcBuilders.standaloneSetup(eventController)
+                .setControllerAdvice(exceptionHandler)
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .build();
     }
 
     @Test
+    void whenNotGetAllEvents_thenReturnEmptyList() throws Exception {
+        List<Event> expectedEvents = new ArrayList<>();
+
+        when(eventService.getAllEvents()).thenReturn(expectedEvents);
+
+        mockMvc.perform(get("/event/getAll"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.error").value(false))
+                .andExpect(jsonPath("$.result.length()").value(0));
+    }
+
+    @Test
     void whenGetAllEvents_thenReturnEventList() throws Exception {
         Event testEvent = EventPreparer.getTestEvent();
-        EventResponseDTO testEventResponseDTO = EventPreparer.getTestEventResponseDTO(testEvent, testEvent.getPhoto());
+        EventResponseDTO testEventResponseDTO = EventPreparer.getTestEventResponseDTO(testEvent);
         List<Event> expectedEvents = List.of(testEvent);
         List<EventResponseDTO> expectedEventResponseDTOs = List.of(testEventResponseDTO);
 
@@ -72,6 +90,36 @@ public class EventControllerTest {
         mockMvc.perform(get("/event/getAll"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.error").value(false))
-                .andExpect(jsonPath("$.result[0][0]").value(objectMapper.readValue(expectedJson, Map.class)));
+                .andExpect(jsonPath("$.result[0]").value(objectMapper.readValue(expectedJson, Map.class)));
     }
+
+    @Test
+    void whenGetEventId_thenReturnEvent() throws Exception {
+        Event testEvent = EventPreparer.getTestEvent();
+        EventResponseDTO testEventResponseDTO = EventPreparer.getTestEventResponseDTO(testEvent);
+
+        when(eventService.getEventById(testEvent.getId())).thenReturn(testEvent);
+        when(ReflectionTestUtils.invokeMethod(eventController, "serialize", testEvent, EventResponseDTO.class)).
+                thenReturn(testEventResponseDTO);
+
+        Map expectedMap = objectMapper.convertValue(testEventResponseDTO, Map.class);
+        String expectedJson = objectMapper.writeValueAsString(expectedMap);
+
+        mockMvc.perform(get("/event/getById/{id}",  testEvent.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.error").value(false))
+                .andExpect(jsonPath("$.result").value(objectMapper.readValue(expectedJson, Map.class)));
+    }
+
+    @Test
+    void whenEventIdNotExisted_thenReturnNotFound() throws Exception {
+        long notExistedEventId = 999L;
+
+        when(eventService.getEventById(notExistedEventId)).
+                thenThrow(new NotFoundException("Event not found with id: " + notExistedEventId));
+
+        mockMvc.perform(get("/event/getById/{id}",  notExistedEventId))
+                .andExpect(status().isNotFound());
+    }
+
 }
