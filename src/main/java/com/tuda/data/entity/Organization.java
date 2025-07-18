@@ -5,6 +5,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 
@@ -15,9 +16,10 @@ import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "organizations")
 @SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "organizations_seq")
+@EqualsAndHashCode(callSuper = true)
 public class Organization extends AbstractEntity {
     private String name;
 

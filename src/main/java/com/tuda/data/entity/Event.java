@@ -4,6 +4,7 @@ import com.tuda.data.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -16,9 +17,10 @@ import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "events")
 @SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "events_seq")
+@EqualsAndHashCode(callSuper = true)
 public class Event extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "organization_id")

@@ -11,7 +11,7 @@ public class EntityController<E extends AbstractEntity> {
 
     protected final ModelMapper modelMapper;
 
-    protected <T> T serialize(E entity, Class<T> toClass) {
+    protected  <T> T serialize(E entity, Class<T> toClass) {
         return modelMapper.map(entity, toClass);
     }
 

@@ -29,7 +29,7 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     @Transactional
-    public Guest addGuest(GuestRequestDTO guestRequestDTO) {
+    public Guest чaddGuest(GuestRequestDTO guestRequestDTO) {
         try {
             Guest guest = modelMapper.map(guestRequestDTO, Guest.class);
             String participationCode = keyService.generateKey();
