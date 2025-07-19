@@ -17,7 +17,9 @@ import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "events")
+@Table(name = "events", indexes = {
+        @Index(name = "idx_event_date_status", columnList = "date, event_status")
+})
 @SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "events_seq")
 public class Event extends AbstractEntity {
     @ManyToOne
@@ -37,6 +39,7 @@ public class Event extends AbstractEntity {
     private int volunteersNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "event_status")
     private EventStatus eventStatus;
 
     @OneToOne
