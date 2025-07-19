@@ -1,23 +1,17 @@
 package com.tuda.service.impl;
 
-import com.tuda.data.entity.AccountingAppUser;
-import com.tuda.data.entity.AppUser;
-import com.tuda.data.entity.Event;
 import com.tuda.data.entity.Guest;
 import com.tuda.dto.request.GuestRequestDTO;
 import com.tuda.exception.BadRequestException;
 import com.tuda.exception.NotFoundException;
-import com.tuda.repository.EventRepository;
 import com.tuda.repository.GuestRepository;
 import com.tuda.service.GuestService;
 import com.tuda.service.KeyService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor

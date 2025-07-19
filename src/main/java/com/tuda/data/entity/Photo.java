@@ -5,6 +5,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
@@ -17,8 +18,9 @@ import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "photos")
+@EqualsAndHashCode(callSuper = true)
 @SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "photos_seq")
 public class Photo extends AbstractEntity {
     private UUID uploadId;

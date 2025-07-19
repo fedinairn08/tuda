@@ -3,6 +3,7 @@ package com.tuda.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
@@ -15,9 +16,10 @@ import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "requests")
 @SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "requests_seq")
+@EqualsAndHashCode(callSuper = true)
 public class Request extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "app_user_id")
