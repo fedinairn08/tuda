@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tuda.controller.EventController;
 import com.tuda.data.entity.Event;
+import com.tuda.data.entity.Organization;
+import com.tuda.data.entity.Photo;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.exception.GlobalExceptionHandler;
 import com.tuda.exception.NotFoundException;
 import com.tuda.service.EventService;
 import com.tuda.unit.preparer.EntityPreparer;
+import com.tuda.unit.preparer.ResponseDTOPreparer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,8 +76,10 @@ public class EventControllerTest {
 
     @Test
     void whenGetAllEvents_thenReturnEventList() throws Exception {
-        Event testEvent = EntityPreparer.getTestEvent();
-        EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
+        Photo photo = new Photo();
+        Organization organization = new Organization();
+        Event testEvent = EntityPreparer.getTestEvent(photo, organization);
+        EventResponseDTO testEventResponseDTO = ResponseDTOPreparer.getTestEventResponseDTO(testEvent);
         List<Event> expectedEvents = List.of(testEvent);
         List<EventResponseDTO> expectedEventResponseDTOs = List.of(testEventResponseDTO);
 
@@ -93,8 +98,10 @@ public class EventControllerTest {
 
     @Test
     void whenGetEventId_thenReturnEvent() throws Exception {
-        Event testEvent = EntityPreparer.getTestEvent();
-        EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
+        Photo photo = new Photo();
+        Organization organization = new Organization();
+        Event testEvent = EntityPreparer.getTestEvent(photo, organization);
+        EventResponseDTO testEventResponseDTO = ResponseDTOPreparer.getTestEventResponseDTO(testEvent);
 
         when(eventService.getEventById(testEvent.getId())).thenReturn(testEvent);
         when(ReflectionTestUtils.invokeMethod(eventController, "serialize", testEvent, EventResponseDTO.class)).
@@ -121,8 +128,10 @@ public class EventControllerTest {
     @Test
     void whenGetExistedUserId_thenGetUserEventList() throws Exception {
         Long expectedUserId = 1L;
-        Event testEvent = EntityPreparer.getTestEvent();
-        EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
+        Photo photo = new Photo();
+        Organization organization = new Organization();
+        Event testEvent = EntityPreparer.getTestEvent(photo, organization);
+        EventResponseDTO testEventResponseDTO = ResponseDTOPreparer.getTestEventResponseDTO(testEvent);
 
         List<Event> expectedEvents = List.of(testEvent);
         List<EventResponseDTO> expectedEventResponseDTOs = List.of(testEventResponseDTO);

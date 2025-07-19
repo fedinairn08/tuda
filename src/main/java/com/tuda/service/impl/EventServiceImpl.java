@@ -72,7 +72,7 @@ public class EventServiceImpl implements EventService {
             requestService.cancelAllEventRequests(eventId);
         }
 
-        modelMapper.map(requestDTO,event);
+        modelMapper.map(requestDTO, event);
 
         if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null && Objects.isNull(event.getPhoto())) {
             Photo photo = new Photo(requestDTO.getUploadId(), requestDTO.getFilename());
