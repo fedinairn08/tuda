@@ -19,7 +19,8 @@ public class EntityPreparer {
                 .participantsNumber(10)
                 .volunteersNumber(10)
                 .eventStatus(EventStatus.WILL)
-                .photo(photo).build();
+                .photo(photo)
+                .build();
     }
 
     public static Photo getTestPhoto() {
