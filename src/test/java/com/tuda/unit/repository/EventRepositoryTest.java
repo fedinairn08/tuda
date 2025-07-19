@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -24,7 +26,7 @@ public class EventRepositoryTest {
     private TestEntityManager testEntityManager;
 
     @Test
-    public void whenGetUserId_thenReturnEventList() {
+    void whenGetUserId_thenReturnUserEventList() {
         Event event = EntityPreparer.getTestEvent();
         event.setId(null);
         event.getOrganization().setId(null);
@@ -39,14 +41,32 @@ public class EventRepositoryTest {
         AccountingAppUser accountingAppUser =
                 EntityPreparer.getTestAccountingAppUser(event, UserRole.PARTICIPANT, appUser, false);
         accountingAppUser.setId(null);
-        accountingAppUser = testEntityManager.persist(accountingAppUser);
 
         List<Event> expectedEvents = List.of(event);
 
-        List<Event> actualEvents = eventRepository.getEventsByUserId(accountingAppUser.getId());
+        List<Event> actualEvents = eventRepository.getEventsByUserId(appUser.getId());
 
         assertThat(actualEvents)
                 .hasSize(expectedEvents.size())
                 .containsExactlyInAnyOrderElementsOf(expectedEvents);
+    }
+
+    @Test
+    void whenGetUserId_thenReturnEmptyUserEventList() {
+        AppUser appUser = EntityPreparer.getAppUser(null);
+        appUser.setId(null);
+        appUser = testEntityManager.persist(appUser);
+
+        Long eventListSize = 0L;
+        List<Event> actualEvents = eventRepository.getEventsByUserId(appUser.getId());
+        assertEquals(eventListSize, actualEvents.size());
+    }
+
+    @Test
+    void whenGetNotExistedUserId_thenReturnEmptyUserEventList() {
+        Long notExistedUserId = 0L;
+        List<Event> actualEvents = eventRepository.getEventsByUserId(notExistedUserId);
+        Long eventListSize = 0L;
+        assertEquals(eventListSize, actualEvents.size());
     }
 }

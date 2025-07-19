@@ -34,7 +34,7 @@ public class EventServiceTest {
     private EventServiceImpl eventService;
 
     @Test
-    void whenNotGetAllEvents_thenReturnEmptyList() {
+    void whenNotGetAllEvents_thenReturnEmptyEventList() {
         List<Event> expectedEvents = new ArrayList<>();
 
         when(eventRepository.findAll()).thenReturn(expectedEvents);
@@ -72,7 +72,7 @@ public class EventServiceTest {
     }
 
     @Test
-    void whenGetNotExistedEventId_thenReturnNotFound() {
+    void whenGetNotExistedEventId_thenReturnNotFoundEvent() {
         Long id = 999L;
 
         when(eventRepository.findById(id)).thenReturn(Optional.empty());
@@ -82,7 +82,7 @@ public class EventServiceTest {
     }
 
     @Test
-    void whenGetExistedUserId_thenGetEventList() {
+    void whenGetExistedUserId_thenGetUserEventList() {
         Long expectedUserId = 1L;
         List<Event> expectedEvents = List.of(EntityPreparer.getTestEvent());
 
@@ -99,7 +99,7 @@ public class EventServiceTest {
     }
 
     @Test
-    void whenGetExistedUserId_thenReturnEmptyList() {
+    void whenGetExistedUserId_thenReturnEmptyUserEventList() {
         Long expectedUserId = 1L;
         List<Event> expectedEvents = new ArrayList<>();
 
@@ -114,7 +114,7 @@ public class EventServiceTest {
     }
 
     @Test
-    void whenGetNotExistedUserId_thenReturnNotFound() {
+    void whenGetNotExistedUserId_thenReturnNotFoundUserEventList() {
         long notExistedUserId = 999L;
 
         when(userRepository.existsById(notExistedUserId)).

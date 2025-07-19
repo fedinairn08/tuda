@@ -62,7 +62,7 @@ public class EventControllerTest {
     }
 
     @Test
-    void whenNotGetAllEvents_thenReturnEmptyList() throws Exception {
+    void whenNotGetAllEvents_thenReturnEmptyEventList() throws Exception {
         List<Event> expectedEvents = new ArrayList<>();
         when(eventService.getAllEvents()).thenReturn(expectedEvents);
         mockMvc.perform(get("/event/getAll"))
@@ -119,7 +119,7 @@ public class EventControllerTest {
     }
 
     @Test
-    void whenGetExistedUserId_thenGetEventList() throws Exception {
+    void whenGetExistedUserId_thenGetUserEventList() throws Exception {
         Long expectedUserId = 1L;
         Event testEvent = EntityPreparer.getTestEvent();
         EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
@@ -141,7 +141,7 @@ public class EventControllerTest {
     }
 
     @Test
-    void whenGetExistedUserId_thenReturnEmptyList() throws Exception {
+    void whenGetExistedUserId_thenReturnEmptyUserEventList() throws Exception {
         Long expectedUserId = 1L;
         List<Event> expectedEvents = new ArrayList<>();
         when(eventService.getEventsByUserId(expectedUserId)).thenReturn(expectedEvents);
@@ -152,7 +152,7 @@ public class EventControllerTest {
     }
 
     @Test
-    void whenGetNotExistedUserId_thenReturnNotFound() throws Exception {
+    void whenGetNotExistedUserId_thenReturnNotFoundUserEventList() throws Exception {
         long notExistedUserId = 999L;
         when(eventService.getEventsByUserId(notExistedUserId)).
                 thenThrow(new NotFoundException(String.format("User not found for id %d", notExistedUserId)));
