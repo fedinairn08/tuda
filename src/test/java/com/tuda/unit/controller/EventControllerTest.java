@@ -8,7 +8,7 @@ import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.exception.GlobalExceptionHandler;
 import com.tuda.exception.NotFoundException;
 import com.tuda.service.EventService;
-import com.tuda.unit.preparer.EventPreparer;
+import com.tuda.unit.preparer.EntityPreparer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,9 +64,7 @@ public class EventControllerTest {
     @Test
     void whenNotGetAllEvents_thenReturnEmptyList() throws Exception {
         List<Event> expectedEvents = new ArrayList<>();
-
         when(eventService.getAllEvents()).thenReturn(expectedEvents);
-
         mockMvc.perform(get("/event/getAll"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.error").value(false))
@@ -75,8 +73,8 @@ public class EventControllerTest {
 
     @Test
     void whenGetAllEvents_thenReturnEventList() throws Exception {
-        Event testEvent = EventPreparer.getTestEvent();
-        EventResponseDTO testEventResponseDTO = EventPreparer.getTestEventResponseDTO(testEvent);
+        Event testEvent = EntityPreparer.getTestEvent();
+        EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
         List<Event> expectedEvents = List.of(testEvent);
         List<EventResponseDTO> expectedEventResponseDTOs = List.of(testEventResponseDTO);
 
@@ -95,8 +93,8 @@ public class EventControllerTest {
 
     @Test
     void whenGetEventId_thenReturnEvent() throws Exception {
-        Event testEvent = EventPreparer.getTestEvent();
-        EventResponseDTO testEventResponseDTO = EventPreparer.getTestEventResponseDTO(testEvent);
+        Event testEvent = EntityPreparer.getTestEvent();
+        EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
 
         when(eventService.getEventById(testEvent.getId())).thenReturn(testEvent);
         when(ReflectionTestUtils.invokeMethod(eventController, "serialize", testEvent, EventResponseDTO.class)).
@@ -114,11 +112,51 @@ public class EventControllerTest {
     @Test
     void whenEventIdNotExisted_thenReturnNotFound() throws Exception {
         long notExistedEventId = 999L;
-
         when(eventService.getEventById(notExistedEventId)).
                 thenThrow(new NotFoundException("Event not found with id: " + notExistedEventId));
-
         mockMvc.perform(get("/event/getById/{id}",  notExistedEventId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenGetExistedUserId_thenGetEventList() throws Exception {
+        Long expectedUserId = 1L;
+        Event testEvent = EntityPreparer.getTestEvent();
+        EventResponseDTO testEventResponseDTO = EntityPreparer.getTestEventResponseDTO(testEvent);
+
+        List<Event> expectedEvents = List.of(testEvent);
+        List<EventResponseDTO> expectedEventResponseDTOs = List.of(testEventResponseDTO);
+
+        when(eventService.getEventsByUserId(expectedUserId)).thenReturn(expectedEvents);
+        when(ReflectionTestUtils.invokeMethod(eventController, "serialize", expectedEvents, EventResponseDTO.class)).
+                thenReturn(expectedEventResponseDTOs);
+
+        Map expectedMap = objectMapper.convertValue(testEventResponseDTO, Map.class);
+        String expectedJson = objectMapper.writeValueAsString(expectedMap);
+
+        mockMvc.perform(get("/event/getByUserId/{id}", expectedUserId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.error").value(false))
+                .andExpect(jsonPath("$.result[0]").value(objectMapper.readValue(expectedJson, Map.class)));
+    }
+
+    @Test
+    void whenGetExistedUserId_thenReturnEmptyList() throws Exception {
+        Long expectedUserId = 1L;
+        List<Event> expectedEvents = new ArrayList<>();
+        when(eventService.getEventsByUserId(expectedUserId)).thenReturn(expectedEvents);
+        mockMvc.perform(get("/event/getByUserId/{id}", expectedUserId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.error").value(false))
+                .andExpect(jsonPath("$.result.length()").value(0));
+    }
+
+    @Test
+    void whenGetNotExistedUserId_thenReturnNotFound() throws Exception {
+        long notExistedUserId = 999L;
+        when(eventService.getEventsByUserId(notExistedUserId)).
+                thenThrow(new NotFoundException(String.format("User not found for id %d", notExistedUserId)));
+        mockMvc.perform(get("/event/getByUserId/{id}", notExistedUserId))
                 .andExpect(status().isNotFound());
     }
 

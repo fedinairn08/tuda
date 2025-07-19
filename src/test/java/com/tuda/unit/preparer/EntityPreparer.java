@@ -1,9 +1,8 @@
 package com.tuda.unit.preparer;
 
-import com.tuda.data.entity.Event;
-import com.tuda.data.entity.Organization;
-import com.tuda.data.entity.Photo;
+import com.tuda.data.entity.*;
 import com.tuda.data.enums.EventStatus;
+import com.tuda.data.enums.UserRole;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.dto.response.OrganizationResponseDTO;
 import com.tuda.dto.response.PhotoResponseDTO;
@@ -11,7 +10,7 @@ import com.tuda.dto.response.PhotoResponseDTO;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class EventPreparer {
+public class EntityPreparer {
     public static Event getTestEvent() {
         Organization organization = Organization.builder()
                 .id(1L)
@@ -54,6 +53,31 @@ public class EventPreparer {
                 .volunteersNumber(10)
                 .eventStatus(EventStatus.WILL.toString())
                 .photo(photoResponseDTO).build();
+    }
+
+    public static AppUser getAppUser(Organization organization) {
+        return AppUser.builder()
+                .id(1L)
+                .name("Ivan")
+                .lastName("Ivanov")
+                .patronymic("Ivanovich")
+                .login("ivanov@mail.ru")
+                .password("1")
+                .organization(organization)
+                .phoneNumber("+79456788765")
+                .build();
+    }
+
+    public static AccountingAppUser getTestAccountingAppUser(Event testEvent, UserRole userRole,
+                                                             AppUser appUser, boolean status) {
+        return AccountingAppUser.builder()
+                .id(1L)
+                .event(testEvent)
+                .appUser(appUser)
+                .status(status)
+                .userRole(userRole)
+                .keyId("87384").build();
+
     }
 
 

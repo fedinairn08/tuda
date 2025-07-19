@@ -54,6 +54,7 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core:3.24.2'
 	testImplementation 'net.javacrumbs.json-unit:json-unit-assertj:2.36.0'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {
