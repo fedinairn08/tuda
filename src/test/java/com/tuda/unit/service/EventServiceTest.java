@@ -153,8 +153,7 @@ public class EventServiceTest {
 
     @Test
     void whenGetEventIdAndEventRequestDTOAndEventWithoutPhoto_thenReturnUpdatedEventWithPhoto() {
-        Organization organization = EntityPreparer.getTestOrganization();
-        Event testEvent = EntityPreparer.getTestEvent(null, organization);
+        Event testEvent = EntityPreparer.getTestEvent(null, null);
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
@@ -177,9 +176,8 @@ public class EventServiceTest {
 
     @Test
     void whenGetEventIdAndEventRequestDTOAndEventWithPhoto_thenReturnUpdatedEventWithoutPhoto() {
-        Organization organization = EntityPreparer.getTestOrganization();
         Photo photo = EntityPreparer.getTestPhoto();
-        Event testEvent = EntityPreparer.getTestEvent(photo, organization);
+        Event testEvent = EntityPreparer.getTestEvent(photo, null);
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
@@ -201,9 +199,8 @@ public class EventServiceTest {
 
     @Test
     void whenGetEventIdAndEventRequestDTOAndEventWithPhoto_thenReturnUpdatedEventWithPhoto() {
-        Organization organization = EntityPreparer.getTestOrganization();
         Photo photo = EntityPreparer.getTestPhoto();
-        Event testEvent = EntityPreparer.getTestEvent(photo, organization);
+        Event testEvent = EntityPreparer.getTestEvent(photo, null);
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
@@ -221,8 +218,69 @@ public class EventServiceTest {
         assertEquals(testEvent, actualEvent);
         verify(eventRepository).findById(testEventId);
         verify(modelMapper).map(testEventRequestDTO, testEvent);
+        verify(fileService).delete(testEvent.getPhoto().getFilename());
         verify(photoRepository).findById(testEvent.getPhoto().getId());
         verify(photoRepository).save(testEvent.getPhoto());
+        verify(eventRepository).save(testEvent);
+    }
+
+    @Test
+    void whenEventIdAndEventRequestDTOWithCancelStatus_thenCancelAllEventRequest() {
+        Photo photo = EntityPreparer.getTestPhoto();
+        Event testEvent = EntityPreparer.getTestEvent(photo, null);
+        Long testEventId = 1L;
+        testEvent.setId(testEventId);
+        EventRequestDTO testEventRequestDTO =
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.CANCELLED, testEvent.getPhoto().getFilename(),
+                        testEvent.getPhoto().getUploadId());
+
+        when(eventRepository.findById(testEventId)).thenReturn(Optional.of(testEvent));
+        doNothing().when(requestService).cancelAllEventRequests(testEvent.getId());
+        mapFromEventRequestDTOToEvent(testEventRequestDTO, testEvent);
+        when(eventRepository.save(testEvent)).thenReturn(testEvent);
+
+        Event actualEvent = eventService.updateEvent(testEventRequestDTO, testEventId);
+
+        assertEquals(testEvent, actualEvent);
+        verify(eventRepository).findById(testEventId);
+        verify(modelMapper).map(testEventRequestDTO, testEvent);
+        verify(eventRepository).save(testEvent);
+    }
+
+    @Test
+    void whenGetNotExistedEventIdAndEventRequestDTO_thenNotFoundEventId() {
+        Event testEvent = EntityPreparer.getTestEvent(null, null);
+        Long testEventId = 1L;
+        testEvent.setId(testEventId);
+        EventRequestDTO testEventRequestDTO =
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "FunFest.png", UUID.randomUUID());
+
+
+        when(eventRepository.findById(testEventId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> eventService.updateEvent(testEventRequestDTO, testEventId));
+        verify(eventRepository).findById(testEventId);
+    }
+
+    @Test
+    void whenGetEventIdAndEventRequestDTOAndOldNotExistedPhoto_thenReturnNotFoundPhoto() {
+        Photo photo = EntityPreparer.getTestPhoto();
+        Event testEvent = EntityPreparer.getTestEvent(photo, null);
+        Long testEventId = 1L;
+        testEvent.setId(testEventId);
+        EventRequestDTO testEventRequestDTO =
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "Sample.png", UUID.randomUUID());
+
+        when(eventRepository.findById(testEventId)).thenReturn(Optional.of(testEvent));
+        mapFromEventRequestDTOToEvent(testEventRequestDTO, testEvent);
+        doNothing().when(fileService).delete(testEvent.getPhoto().getFilename());
+        when(photoRepository.findById(testEvent.getPhoto().getId())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> eventService.updateEvent(testEventRequestDTO, testEventId));
+        verify(eventRepository).findById(testEventId);
+        verify(modelMapper).map(testEventRequestDTO, testEvent);
+        verify(fileService).delete(testEvent.getPhoto().getFilename());
+        verify(photoRepository).findById(testEvent.getPhoto().getId());
     }
 
     void mapFromEventRequestDTOToEvent(EventRequestDTO testEventRequestDTO, Event testEvent) {

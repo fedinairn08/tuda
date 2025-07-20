@@ -167,6 +167,7 @@ public class EventControllerTest {
                 thenThrow(new NotFoundException(String.format("User not found for id %d", notExistedUserId)));
         mockMvc.perform(get("/event/getByUserId/{id}", notExistedUserId))
                 .andExpect(status().isNotFound());
+
     }
 
 }
