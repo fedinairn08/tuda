@@ -38,6 +38,19 @@ public class RequestDTOPreparer {
                 .status(false)
                 .keyId("1")
                 .build();
+    }
 
+    public static EventRequestDTO getEventRequestDTO() {
+        return EventRequestDTO.builder()
+                .organizationId(1L)
+                .city("Moscow")
+                .date(LocalDateTime.now())
+                .title("FunFest")
+                .description("Some description")
+                .participantsNumber(10)
+                .volunteersNumber(10)
+                .eventStatus(EventStatus.WILL.toString())
+                .filename("sample.png")
+                .uploadId(UUID.randomUUID()).build();
     }
 }
