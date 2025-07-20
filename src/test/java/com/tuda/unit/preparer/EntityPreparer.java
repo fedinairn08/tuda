@@ -50,6 +50,17 @@ public class EntityPreparer {
                 .build();
     }
 
+    public static Guest getTestGuest(Event testEvent) {
+        return Guest.builder()
+                .id(1L)
+                .event(testEvent)
+                .fullName("Жаров Никита Игоревич")
+                .mail("ivanov@mail.ru")
+                .status(false)
+                .keyId("1")
+                .build();
+    }
+
     public static AccountingAppUser getTestAccountingAppUser(Event testEvent, UserRole userRole,
                                                              AppUser appUser, boolean status) {
         return AccountingAppUser.builder()

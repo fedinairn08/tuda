@@ -27,7 +27,7 @@ public class Guest extends AbstractEntity {
 
     private String mail;
 
-    private boolean status;
+    private Boolean status;
 
     private String keyId;
 }

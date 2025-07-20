@@ -2,6 +2,7 @@ package com.tuda.unit.preparer;
 
 import com.tuda.data.enums.EventStatus;
 import com.tuda.dto.request.EventRequestDTO;
+import com.tuda.dto.request.GuestRequestDTO;
 import com.tuda.dto.request.OrganizationRequestDTO;
 
 import java.time.LocalDateTime;
@@ -27,5 +28,16 @@ public class RequestDTOPreparer {
                 .name("Test Org")
                 .phoneNumber("123456789")
                 .build();
+    }
+
+    public static GuestRequestDTO getGuestRequestDTO() {
+        return GuestRequestDTO.builder()
+                .event(1L)
+                .fullName("Жаров Никита Игоревич")
+                .mail("ivanov@mail.ru")
+                .status(false)
+                .keyId("1")
+                .build();
+
     }
 }
