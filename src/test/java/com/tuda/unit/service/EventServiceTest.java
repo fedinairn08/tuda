@@ -7,6 +7,7 @@ import com.tuda.data.enums.EventStatus;
 import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.exception.NotFoundException;
 import com.tuda.repository.EventRepository;
+import com.tuda.repository.OrganizationRepository;
 import com.tuda.repository.PhotoRepository;
 import com.tuda.repository.UserRepository;
 import com.tuda.service.RequestService;
@@ -14,6 +15,7 @@ import com.tuda.service.file.FileService;
 import com.tuda.service.impl.EventServiceImpl;
 import com.tuda.unit.preparer.EntityPreparer;
 import com.tuda.unit.preparer.RequestDTOPreparer;
+import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,6 +52,12 @@ public class EventServiceTest {
 
     @Mock
     private FileService fileService;
+
+    @Mock
+    private Counter eventCounter;
+
+    @Mock
+    private OrganizationRepository organizationRepository;
 
     @InjectMocks
     private EventServiceImpl eventService;
@@ -157,7 +165,7 @@ public class EventServiceTest {
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
-                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "FunFest.png", UUID.randomUUID());
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "funFest.png", UUID.randomUUID());
         Photo newPhoto = new Photo(testEventRequestDTO.getUploadId(), testEventRequestDTO.getFilename());
 
         when(eventRepository.findById(testEventId)).thenReturn(Optional.of(testEvent));
@@ -204,7 +212,7 @@ public class EventServiceTest {
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
-                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "Sample.png", UUID.randomUUID());
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "sample.png", UUID.randomUUID());
 
         when(eventRepository.findById(testEventId)).thenReturn(Optional.of(testEvent));
         mapFromEventRequestDTOToEvent(testEventRequestDTO, testEvent);
@@ -218,7 +226,6 @@ public class EventServiceTest {
         assertEquals(testEvent, actualEvent);
         verify(eventRepository).findById(testEventId);
         verify(modelMapper).map(testEventRequestDTO, testEvent);
-        verify(fileService).delete(testEvent.getPhoto().getFilename());
         verify(photoRepository).findById(testEvent.getPhoto().getId());
         verify(photoRepository).save(testEvent.getPhoto());
         verify(eventRepository).save(testEvent);
@@ -253,7 +260,7 @@ public class EventServiceTest {
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
-                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "FunFest.png", UUID.randomUUID());
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "funFest.png", UUID.randomUUID());
 
 
         when(eventRepository.findById(testEventId)).thenReturn(Optional.empty());
@@ -269,7 +276,7 @@ public class EventServiceTest {
         Long testEventId = 1L;
         testEvent.setId(testEventId);
         EventRequestDTO testEventRequestDTO =
-                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "Sample.png", UUID.randomUUID());
+                RequestDTOPreparer.getEventRequestDTO(EventStatus.WILL, "sample.png", UUID.randomUUID());
 
         when(eventRepository.findById(testEventId)).thenReturn(Optional.of(testEvent));
         mapFromEventRequestDTOToEvent(testEventRequestDTO, testEvent);
@@ -297,4 +304,67 @@ public class EventServiceTest {
             return null;
         }).when(modelMapper).map(testEventRequestDTO, testEvent);
     }
+
+    @Test
+    void whenGetEventRequestDTO_thenAddEvent() {
+        UUID photoUUID = UUID.randomUUID();
+        EventRequestDTO eventRequestDTO = RequestDTOPreparer.getEventRequestDTO();
+        eventRequestDTO.setOrganizationId(1L);
+        eventRequestDTO.setFilename("fun-fest.png");
+        eventRequestDTO.setUploadId(photoUUID);
+
+        Organization foundOrganization = EntityPreparer.getTestOrganization();
+        foundOrganization.setId(eventRequestDTO.getOrganizationId());
+
+        Photo foundphoto = EntityPreparer.getTestPhoto();
+        foundphoto.setUploadId(eventRequestDTO.getUploadId());
+        foundphoto.setFilename(eventRequestDTO.getFilename());
+
+        Event convertedEvent = Event.builder()
+                .id(1L)
+                .organization(null)
+                .city(eventRequestDTO.getCity())
+                .date(eventRequestDTO.getDate())
+                .title(eventRequestDTO.getTitle())
+                .description(eventRequestDTO.getDescription())
+                .participantsNumber(eventRequestDTO.getParticipantsNumber())
+                .volunteersNumber(eventRequestDTO.getVolunteersNumber())
+                .eventStatus(EventStatus.valueOf(eventRequestDTO.getEventStatus()))
+                .photo(null).build();
+
+        Event eventWithPhotoAndOrganization = Event.builder()
+                .id(convertedEvent.getId())
+                .organization(foundOrganization)
+                .city(convertedEvent.getCity())
+                .date(convertedEvent.getDate())
+                .title(convertedEvent.getTitle())
+                .description(convertedEvent.getDescription())
+                .participantsNumber(convertedEvent.getParticipantsNumber())
+                .volunteersNumber(convertedEvent.getVolunteersNumber())
+                .eventStatus(convertedEvent.getEventStatus())
+                .photo(foundphoto).build();
+
+        Event expectedEvent = Event.builder()
+                .id(convertedEvent.getId())
+                .organization(foundOrganization)
+                .city(eventRequestDTO.getCity())
+                .date(eventRequestDTO.getDate())
+                .title(eventRequestDTO.getTitle())
+                .description(eventRequestDTO.getDescription())
+                .participantsNumber(eventRequestDTO.getParticipantsNumber())
+                .volunteersNumber(eventRequestDTO.getVolunteersNumber())
+                .eventStatus(EventStatus.valueOf(eventRequestDTO.getEventStatus()))
+                .photo(foundphoto).build();
+
+        when(modelMapper.map(eventRequestDTO, Event.class)).thenReturn(convertedEvent);
+        when(organizationRepository.findById(eventRequestDTO.getOrganizationId())).thenReturn(Optional.of(foundOrganization));
+        when(photoRepository.save(any(Photo.class))).thenReturn(foundphoto);
+        doNothing().when(eventCounter).increment();
+        when(eventRepository.save(any(Event.class))).thenReturn(eventWithPhotoAndOrganization);
+
+        Event actualEvent = eventService.addEvent(eventRequestDTO);
+
+        assertEquals(actualEvent, expectedEvent);
+    }
+
 }

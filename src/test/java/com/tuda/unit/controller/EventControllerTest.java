@@ -6,11 +6,14 @@ import com.tuda.controller.EventController;
 import com.tuda.data.entity.Event;
 import com.tuda.data.entity.Organization;
 import com.tuda.data.entity.Photo;
+import com.tuda.data.enums.EventStatus;
+import com.tuda.dto.request.EventRequestDTO;
 import com.tuda.dto.response.EventResponseDTO;
 import com.tuda.exception.GlobalExceptionHandler;
 import com.tuda.exception.NotFoundException;
 import com.tuda.service.EventService;
 import com.tuda.unit.preparer.EntityPreparer;
+import com.tuda.unit.preparer.RequestDTOPreparer;
 import com.tuda.unit.preparer.ResponseDTOPreparer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -167,7 +171,6 @@ public class EventControllerTest {
                 thenThrow(new NotFoundException(String.format("User not found for id %d", notExistedUserId)));
         mockMvc.perform(get("/event/getByUserId/{id}", notExistedUserId))
                 .andExpect(status().isNotFound());
-
     }
 
 }
