@@ -1,11 +1,16 @@
 package com.tuda.dto.request;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@SuperBuilder
+@NoArgsConstructor
 public class EventRequestDTO {
     private Long organizationId;
 

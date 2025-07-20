@@ -8,6 +8,15 @@ public class ApiResponse<T> {
     private String errorMassage;
     private T result;
 
+    public ApiResponse() {
+    }
+
+    public ApiResponse(boolean error, String errorMassage, T result) {
+        this.error = error;
+        this.errorMassage = errorMassage;
+        this.result = result;
+    }
+
     public ApiResponse(boolean error, T result) {
         this.error = error;
         this.result = result;

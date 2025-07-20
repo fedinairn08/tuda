@@ -72,7 +72,7 @@ public class EventServiceImpl implements EventService {
             requestService.cancelAllEventRequests(eventId);
         }
 
-        modelMapper.map(requestDTO,event);
+        modelMapper.map(requestDTO, event);
 
         if (requestDTO.getFilename() != null && requestDTO.getUploadId() != null && Objects.isNull(event.getPhoto())) {
             Photo photo = new Photo(requestDTO.getUploadId(), requestDTO.getFilename());
@@ -142,7 +142,7 @@ public class EventServiceImpl implements EventService {
         }
         for (Guest guest : guests) {
             EventParticipantResponseDTO participant = new EventParticipantResponseDTO(guest.getId(),
-                    guest.getFullName(), guest.isStatus(), UserRole.PARTICIPANT, ParticipantType.GUEST);
+                    guest.getFullName(), guest.getStatus(), UserRole.PARTICIPANT, ParticipantType.GUEST);
             participants.add(participant);
         }
 

@@ -4,11 +4,13 @@ import com.tuda.data.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 
+@SuperBuilder
 @Accessors(chain = true)
 @Entity
 @Getter
