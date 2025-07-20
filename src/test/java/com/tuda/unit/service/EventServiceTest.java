@@ -580,14 +580,10 @@ public class EventServiceTest {
 
     @Test
     void getEventsByStatusAndAppUserIdForUser_shouldReturnEventsWhenUserExists() {
-        Event event1 = Event.builder()
-                .id(1L)
-                .title("Event 1")
-                .eventStatus(EventStatus.WILL).build();
-        Event event2 = Event.builder()
-                .id(2L)
-                .title("Event 2")
-                .eventStatus(EventStatus.PASSED).build();
+        Event event1 = createTestEvent(1L, "Event 1");
+        event1.setEventStatus(EventStatus.WILL);
+        Event event2 = createTestEvent(2L, "Event 2");
+        event1.setEventStatus(EventStatus.PASSED);
 
         when(userRepository.existsById(1L)).thenReturn(true);
         when(eventRepository.findAllByStatusAndAppUserIdForUser(1L, EventStatus.WILL.toString()))
@@ -630,10 +626,8 @@ public class EventServiceTest {
 
     @Test
     void getEventsByStatusAndAppUserIdForUser_shouldFilterByCorrectStatus() {
-        Event completedEvent = Event.builder()
-                .id(2L)
-                .title("Completed Event")
-                .eventStatus(EventStatus.PASSED).build();
+        Event completedEvent = createTestEvent(2L, "Completed Event");
+        completedEvent.setEventStatus(EventStatus.PASSED);
 
         when(userRepository.existsById(1L)).thenReturn(true);
         when(eventRepository.findAllByStatusAndAppUserIdForUser(1L, EventStatus.PASSED.toString()))

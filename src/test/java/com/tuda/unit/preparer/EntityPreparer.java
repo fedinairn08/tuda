@@ -9,8 +9,7 @@ import java.util.UUID;
 
 public class EntityPreparer {
     public static Event getTestEvent(Photo photo, Organization organization) {
-        return Event.builder()
-                .id(1L)
+        Event event = Event.builder()
                 .organization(organization)
                 .city("Moscow")
                 .date(LocalDateTime.now())
@@ -21,6 +20,8 @@ public class EntityPreparer {
                 .eventStatus(EventStatus.WILL)
                 .photo(photo)
                 .build();
+        event.setId(1L);
+        return event;
     }
 
     public static Photo getTestPhoto() {
