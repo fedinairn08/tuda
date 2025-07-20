@@ -2,10 +2,13 @@ package com.tuda.repository;
 
 import com.tuda.data.entity.AppUser;
 import com.tuda.data.entity.Event;
+import com.tuda.data.enums.EventStatus;
+import org.springdoc.core.converters.models.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,4 +36,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = "SELECT e.* FROM events e JOIN accounting_app_users acc ON e.id = acc.event_id WHERE acc.app_user_id = :appUserId AND acc.user_role = :role", nativeQuery = true)
     List<Event> findAllByAppUserIdAndRole(long appUserId, long role);
+
+    @Query("SELECT e FROM Event e WHERE e.date < :date AND e.eventStatus = :status")
+    List<Event> findAllByDateBeforeAndEventStatus(
+            @Param("date") LocalDateTime date,
+            @Param("status") EventStatus status
+    );
 }

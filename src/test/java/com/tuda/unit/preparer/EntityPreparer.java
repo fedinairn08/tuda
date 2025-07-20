@@ -19,7 +19,8 @@ public class EntityPreparer {
                 .participantsNumber(10)
                 .volunteersNumber(10)
                 .eventStatus(EventStatus.WILL)
-                .photo(photo).build();
+                .photo(photo)
+                .build();
     }
 
     public static Photo getTestPhoto() {
@@ -46,6 +47,17 @@ public class EntityPreparer {
                 .password("1")
                 .organization(organization)
                 .phoneNumber("+79456788765")
+                .build();
+    }
+
+    public static Guest getTestGuest(Event testEvent) {
+        return Guest.builder()
+                .id(1L)
+                .event(testEvent)
+                .fullName("Жаров Никита Игоревич")
+                .mail("ivanov@mail.ru")
+                .status(false)
+                .keyId("1")
                 .build();
     }
 

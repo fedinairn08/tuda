@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 
+@SuperBuilder
 @Accessors(chain = true)
 @Entity
 @Getter
@@ -17,10 +18,11 @@ import static com.tuda.data.entity.AbstractEntity.DEFAULT_GENERATOR;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-@Table(name = "events")
+@Builder
+@Table(name = "events", indexes = {
+        @Index(name = "idx_event_date_status", columnList = "date, event_status")
+})
 @SequenceGenerator(name = DEFAULT_GENERATOR, sequenceName = "events_seq")
-@EqualsAndHashCode(callSuper = true)
 public class Event extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "organization_id")
@@ -39,6 +41,7 @@ public class Event extends AbstractEntity {
     private int volunteersNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "event_status")
     private EventStatus eventStatus;
 
     @OneToOne
